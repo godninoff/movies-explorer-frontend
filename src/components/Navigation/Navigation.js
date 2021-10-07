@@ -34,29 +34,29 @@ function Navigation() {
             <button className={`header__navbar ${location.pathname === '/' ? "header__navbar display-none" : ''} `}>
                 <FaIcons.FaBars onClick={showSidebar} />
             </button>
-            <div className="nav-container">
-                <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
-                    <ul className="nav-menu-items">
-                        <li className="navbar-toggle">
-                            <Link to="#" className="menu-bars" onClick={showSidebar}>
-                                <IoIcons.IoMdClose />
-                            </Link>
-                        </li>
-                        {SidebarData.map((item, index) => {
-                        return (
-                            <li key={index} className={item.cName}>
-                                <Link to={item.path}>
-                                    <span>{item.title}</span>
+                <div className={sidebar ? 'nav-menu__container active' : 'nav-menu__container'}>
+                    <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
+                        <ul className="nav-menu-items">
+                            <li className="navbar-toggle">
+                                <Link to="#" className="menu-bars" onClick={showSidebar}>
+                                    <IoIcons.IoMdClose />
                                 </Link>
-                            </li>   
-                        )
-                        })}
-                        <Link to="/profile" className="header__account account__sidebar">Аккаунт
-                            <span className="header__account-icon"></span>
-                        </Link> 
-                    </ul>
-                </nav>
-            </div>
+                            </li>
+                            {SidebarData.map((item, index) => {
+                            return (
+                                <li key={index} className={item.cName}>
+                                    <Link to={item.path}>
+                                        <span>{item.title}</span>
+                                    </Link>
+                                </li>   
+                            )
+                            })}
+                            <Link to="/profile" className="header__account account__sidebar">Аккаунт
+                                <span className="header__account-icon"></span>
+                            </Link> 
+                        </ul>
+                    </nav>
+                </div>
         </div>  
     );
 }
