@@ -71,7 +71,10 @@
     width: 396px;
     height: 45px;
     margin-bottom: 16px;
-    padding: 0;
+}
+
+.login__bottom-button {
+    margin-top: 179px;
 }
 
 .auth__bottom-text {
@@ -83,7 +86,7 @@
     margin: 0;
 }
 
-.auth__bottom-text:hover {
+.auth__link-nav:hover {
     opacity: 0.6;
     transition: all 500ms ease;
 }

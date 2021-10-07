@@ -22,7 +22,7 @@ function Register() {
                 </form>
                 <button className="register__button auth__bottom-button">Зарегистрироваться</button>
                 <p className="register__bottom-text auth__bottom-text">Уже зарегистрированы?
-                    <Link to="/signin" className="register__nav auth__link-nav">Войти</Link>
+                    <Link to="/signin" className="register__nav auth__link-nav">{''}Войти</Link>
                 </p>
             </section>
         </main>
