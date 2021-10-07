@@ -1,0 +1,23 @@
+.header_landing-background {
+  background-color: var(--header-bg-color);
+}
+
+.heder__container {
+    max-width: 1280px;
+    display: flex;
+    padding: 18px 70px;
+    margin: auto;
+    box-sizing: border-box;
+}
+
+@media screen and (max-width: 968px) {
+  .heder__container {
+    padding: 21px 30px;
+  }
+}
+
+@media screen and (max-width: 720px) {
+  .heder__container {
+    padding: 24px 14px;
+  }
+}

@@ -1,0 +1,37 @@
+.app {
+    font-family: 'Inter', Arial, sans-serif;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    margin: 0, auto; 
+    padding: 0;
+    background-color: var(--section-bg-color);
+    box-sizing: border-box;
+}
+
+.app_background_color {
+    --header-bg-color: #073042;
+    --section-bg-color: #202020;
+    --techs-bg-color: #272727;
+}
+
+.app__section-title {
+    color: white;
+    width: 100%;
+    font-weight: normal;
+    font-size: 22px;
+    line-height: 27px;
+    letter-spacing: -0.04em;
+    border-bottom: 1px solid #DADADA;
+    padding-bottom: 23px;
+    margin: 0;   
+}
+
+@media screen and (max-width: 720px) {
+    .app__section-title {
+        font-size: 18px;
+        line-height: 22px;
+    }
+}

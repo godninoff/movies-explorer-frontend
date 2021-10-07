@@ -1,0 +1,109 @@
+.techs {
+    background-color: var(--techs-bg-color);
+}
+
+.techs__main-container {
+    max-width: 1280px;
+    box-sizing: border-box;
+    padding: 100px 70px;
+    margin: auto;
+}
+
+.techs__title {
+    color: white;
+    font-weight: normal;
+    font-size: 50px;
+    line-height: 58px;
+    text-align: center;
+    letter-spacing: -0.04em;
+    padding-top: 90px;
+    padding-bottom: 26px;
+    margin: 0;
+}
+
+.techs__paragraph {
+    color: white;
+    max-width: 460px;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    letter-spacing: -0.04em;
+    margin: auto;
+}
+
+.techs__list {
+    color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    list-style: none;
+    padding-top: 100px;
+    margin: 0;
+    padding-left: 0;
+}
+
+.techs__type {
+    width: 90px;
+    max-height: 60px;
+    color: white;
+    background-color: #303030;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 17px;
+    text-align: center;
+    letter-spacing: -0.04em;
+    border-radius: 10px;
+    padding: 21px 0;
+    margin: 0 10px 0 0;
+}
+
+@media screen and (max-width: 968px) {
+    .techs__main-container {
+        padding: 90px 50px;
+    }
+
+    .techs__title {
+        padding-top: 80px;
+        padding-bottom: 22px;
+    }
+
+    .techs__paragraph {
+        font-size: 12px;
+        line-height: 18px;
+    }
+
+    .techs__list {
+        padding-top: 83px;
+    }
+
+    .techs__type {
+        font-size: 12px;
+        line-height: 15px; 
+    }
+}
+
+@media screen and (max-width: 720px) {
+    .techs__main-container {
+        padding: 70px 18px;
+    }
+
+    .techs__title {
+        font-size: 30px;
+        line-height: 36px;
+        padding-top: 60px;
+        padding-bottom: 24px;
+    }
+
+    .techs__paragraph {
+        font-size: 11px;
+        line-height: 16px;
+    }
+
+    .techs__list {
+        padding: 50px 50px 0 50px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, 84px);
+        gap: 10px 10px;
+    }
+}
