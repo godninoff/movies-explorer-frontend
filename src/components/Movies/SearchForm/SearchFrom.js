@@ -8,7 +8,7 @@ function SearchForm() {
             <form className="search__form" name="movies-search">
                 <fieldset className="search__movie">
                     <div className="search__movie-section">
-                        <input className="serch__movie-input" required name="movie" type="text" placeholder="Фильм" />
+                        <input className="search__movie-input" required name="movie" type="text" placeholder="Фильм" />
                         <button className="search__button" type="submit">Найти</button>
                     </div>
                     <FilterCheckbox />

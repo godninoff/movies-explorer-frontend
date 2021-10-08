@@ -39,9 +39,15 @@
     background-position: center;
     cursor: pointer;
     border: none;
-    width: 20px;
-    height: 20px;
-    display: flex;
+    width: 14px;
+    height: 12px;
+    margin-top: 3px;
+}
+
+.pushed {
+    background-image: url('../../../images/pushed-like.svg');
+    position: relative;
+    left: 0;
 }
 
 @media screen and (max-width: 720px) {

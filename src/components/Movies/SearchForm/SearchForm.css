@@ -22,7 +22,7 @@
     padding-bottom: 13px;
 }
 
-.serch__movie-input {
+.search__movie-input {
     color: #8B8B8B;
     width: 100%;
     font-weight: 500;
@@ -31,7 +31,11 @@
     background-color: transparent;
     outline: none;
     border: none;
-    padding: 0;
+    padding: 0; 
+}
+
+.search__movie-input:focus {
+    border-bottom: 1px solid #4285F4;
 }
 
 .search__button {
