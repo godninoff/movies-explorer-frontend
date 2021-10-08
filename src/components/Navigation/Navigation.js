@@ -10,7 +10,7 @@ function Navigation() {
     const location = useLocation(false);
     const [sidebar, setSidebar] = React.useState(false);
 
-    const showSidebar = () => setSidebar(!sidebar)
+    const showSidebar = () => setSidebar(!sidebar);
 
     return (
         <div className={`header__navigation ${location.pathname === '/' ? "header__navigation_links-landing" : ''}`}>
