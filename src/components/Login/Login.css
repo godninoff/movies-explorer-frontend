@@ -1,0 +1,145 @@
+.login {
+    max-width: 396px;
+    margin: auto;
+    padding-top: 70px;
+}
+
+.auth__title {
+    color: white;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 29px;
+    padding: 40px 0;
+    margin: 0;
+}
+
+.auth__fields {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.auth-inputs__text {
+    color: #8B8B8B;
+    font-weight: normal;
+    font-size: 10px;
+    line-height: 12px;
+    margin: 0;
+    padding: 20px 0 10px;
+}
+
+.auth-inputs__text:first-of-type {
+    padding-top: 0;
+}
+
+.auth_inputs {
+    color: white;
+    background: #2F2F2F;
+    width: 396px;
+    height: 46px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 16px;
+    padding: 0 0 0 15px;
+    box-sizing: border-box;
+    margin: auto;
+    display: block;
+    position: relative;
+}
+
+.auth__error {
+    color: #EE3465;
+    font-weight: normal;
+    font-size: 10px;
+    line-height: 12px;
+    margin: 0;
+}
+
+.auth__bottom-button {
+    color: white;
+    background: #4285F4;
+    border-radius: 3px;
+    border: none;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    text-align: center;
+    cursor: pointer;
+    width: 396px;
+    height: 45px;
+    margin-bottom: 16px;
+}
+
+.login__bottom-button {
+    margin-top: 179px;
+}
+
+.auth__bottom-text {
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 17px;
+    text-align: center;
+    color: #8B8B8B;
+    margin: 0;
+}
+
+.auth__link-nav:hover {
+    opacity: 0.6;
+    transition: all 500ms ease;
+}
+
+.auth__link-nav {
+    color: #4285F4;
+    margin-left: 6px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.auth__link-nav:hover {
+    opacity: 0.6;
+    transition: all 500ms ease;
+}
+
+@media screen and (max-width: 440px) {
+    .auth__title {
+        text-align: center;
+        padding: 50px 0 80px;
+    }
+
+    .auth__bottom-text {
+        font-size: 12px;
+        line-height: 15px;
+    }
+
+    .auth__bottom-button {
+        font-size: 12px;
+        line-height: 15px;      
+        width: 260px;
+    }
+
+    .auth_inputs {
+        width: 260px;
+    }
+
+    .auth__form {
+        padding: 0 30px;
+    }
+
+    .auth__fields {
+        width: 260px;    
+        margin: auto;
+    }
+
+    .header__logo {
+        display: block;
+        margin: auto;
+    }
+
+    .login__bottom-button {
+        margin: 267px auto 14px;
+        display: block;
+    }
+}

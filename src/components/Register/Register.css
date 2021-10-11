@@ -1,0 +1,16 @@
+.register {
+    max-width: 396px;
+    margin: auto;
+    padding-top: 70px;
+}
+
+.register__button {
+    margin-top: 69px;
+}
+
+@media screen and (max-width: 440px) {
+    .register__button {
+        margin: 157px auto 0;
+        display: block;
+    }
+}
