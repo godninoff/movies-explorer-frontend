@@ -33,8 +33,7 @@
     margin: 0;
 }
 
-.movie__like {
-    background-image: url('../../../images/inactive-like.svg');
+.movie__button {
     background-color: #222222;
     background-position: center;
     cursor: pointer;
@@ -44,10 +43,20 @@
     margin-top: 3px;
 }
 
+.like {
+    background-image: url('../../../images/inactive-like.svg');
+}
+
 .pushed {
     background-image: url('../../../images/pushed-like.svg');
     position: relative;
     left: 0;
+}
+
+.remove {
+    background-image: url('../../../images/remove-icon.svg');
+    width: 14px;
+    height: 12px;
 }
 
 @media screen and (max-width: 720px) {

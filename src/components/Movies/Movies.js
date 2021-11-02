@@ -3,12 +3,14 @@ import Header from '../Header/Header';
 import MoviesCardList from './MoviesCardList/MoviesCardList';
 import SearchForm from './SearchForm/SearchFrom';
 
-function Movies() {
+function Movies(props) {
     return (
         <main className="movies">
-            <Header />
+            <Header loggedIn={props.loggedIn} />
             <SearchForm />
-            <MoviesCardList />
+            <MoviesCardList 
+                movies={props.movies}
+            />
             <Footer />
         </main>
     );

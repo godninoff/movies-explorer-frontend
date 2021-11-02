@@ -19,6 +19,14 @@
     margin: 0;
 }
 
+.auth__form span {
+    color: #EE3465;
+    font-weight: normal;
+    font-size: 10px;
+    line-height: 12px;
+    margin: 0;
+}
+
 .auth-inputs__text {
     color: #8B8B8B;
     font-weight: normal;
@@ -33,7 +41,7 @@
 }
 
 .auth_inputs {
-    color: white;
+    color: #EE3465;
     background: #2F2F2F;
     width: 396px;
     height: 46px;
@@ -50,14 +58,6 @@
     position: relative;
 }
 
-.auth__error {
-    color: #EE3465;
-    font-weight: normal;
-    font-size: 10px;
-    line-height: 12px;
-    margin: 0;
-}
-
 .auth__bottom-button {
     color: white;
     background: #4285F4;
@@ -71,6 +71,16 @@
     width: 396px;
     height: 45px;
     margin-bottom: 16px;
+}
+
+.auth__bottom-button:disabled {
+    cursor: not-allowed;
+    background: grey
+}
+
+.auth__bottom-button:hover {
+    opacity: 0.6;
+    transition: all 500ms ease;
 }
 
 .login__bottom-button {

@@ -1,8 +1,12 @@
 import logo from '../../../images/logo.svg';
+import { Link } from 'react-router-dom';
+import { LANDING_ROUTE } from '../../../utils/consts';
 
 function HeaderLogo() {
     return(
-        <img className="header__logo" src={logo} alt="Лого" /> 
+        <Link to={LANDING_ROUTE}>
+            <img className="header__logo" src={logo} alt="Лого" /> 
+        </Link>
     );
 }
 

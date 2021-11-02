@@ -34,8 +34,15 @@
     padding: 0; 
 }
 
+.search__movie p {
+    color: #EE3465;
+    font-weight: normal;
+    font-size: 10px;
+    line-height: 12px;
+}
+
 .search__movie-input:focus {
-    border-bottom: 1px solid #4285F4;
+    border: 1px solid #4285F4;
 }
 
 .search__button {

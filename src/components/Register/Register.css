@@ -8,6 +8,10 @@
     margin-top: 69px;
 }
 
+.errr {
+    color: lightgoldenrodyellow;
+}
+
 @media screen and (max-width: 440px) {
     .register__button {
         margin: 157px auto 0;

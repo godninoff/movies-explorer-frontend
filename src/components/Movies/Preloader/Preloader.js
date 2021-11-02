@@ -1,11 +1,14 @@
 import React from 'react'
 import './Preloader.css'
+import BeatLoader
+from "react-spinners/BeatLoader";
 
-const Preloader = () => {
+
+const Preloader = (props) => {
     return (
-        <div className="preloader">
+        <div className="preloader" preloader={props.preloader}>
             <div className="preloader__container">
-                <span className="preloader__round"></span>
+                <BeatLoader height={15} color={'lime'} />
             </div>
         </div>
     )

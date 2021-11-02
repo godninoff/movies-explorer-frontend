@@ -1,31 +1,76 @@
 import './Register.css';
 import { Link } from "react-router-dom";
 import HeaderLogo from '../Header/HeaderLogo/HeaderLogo';
+import useForm from '../../utils/useForm';
+import Preloader from '../Movies/Preloader/Preloader';
+import { LOGIN_ROUTE } from '../../utils/consts';
+
+function Register(props) {
+    const {handleChange, values, errors, resetForm, isValid} = useForm();
 
 
-function Register() {
+    const handleSubmit = e => {
+        const { name, email, password } = values;
+        e.preventDefault();
+
+        props.onRegister(email, password, name);
+        resetForm({}, {}, false);
+    }
+
     return(
-        <main>
+
             <section className="register">
                 <HeaderLogo />
                 <h2 className="register__title auth__title">Добро пожаловать!</h2>
-                <form className="register__form auth__form">
+                <form className="register__form auth__form" onSubmit={handleSubmit}>
                     <fieldset className="register__fields auth__fields">
                         <p className="register__form_name auth-inputs__text">Имя</p>
-                        <input className="register__form-input auth_inputs" type="text" placeholder="Антон" required></input>
+                        <input 
+                            className="register__form-input auth_inputs" 
+                            type="text" 
+                            name="name"
+                            required
+                            minLength="2"
+                            maxLength="30"
+                            value={values.name || ''}
+                            onChange={handleChange}
+                            pattern="[а-яА-ЯёЁa-zA-Z\- ]{1,}"
+                        />
+                        <span>{errors.name}</span>
+
                         <p className="register__form_email auth-inputs__text">E-mail</p>
-                        <input className="register__form-input auth_inputs" type="email" placeholder="pochta@yandex.ru" required></input>
+                        <input 
+                            className="register__form-input auth_inputs" 
+                            type="email"  
+                            name="email"
+                            required
+                            value={values.email || ''}
+                            onChange={handleChange}
+                        />
+                        <span>{errors.email}</span>
+
                         <p className="register__form_password auth-inputs__text">Пароль</p>
-                        <input className="register__form-input auth_inputs" type="password" placeholder="••••••••••••••" required></input>
-                        <span className="register__error auth__error">Что-то пошло не так...</span>
+                        <input 
+                            className="register__form-input auth_inputs" 
+                            type="password" 
+                            name="password"
+                            required
+                            minLength="8"
+                            value={values.password || ''}
+                            onChange={handleChange}
+                        />
+                        <span>{errors.password}</span>
                     </fieldset>
+                    <span>{props.onResponse}</span>
+                    <button className="register__button auth__bottom-button" type="submit" name="submit" disabled={!isValid}>
+                        {props.preloader ? <Preloader /> : 'Зарегистрироваться'}
+                    </button>  
                 </form>
-                <button className="register__button auth__bottom-button">Зарегистрироваться</button>
                 <p className="register__bottom-text auth__bottom-text">Уже зарегистрированы?
-                    <Link to="/signin" className="register__nav auth__link-nav">{''}Войти</Link>
-                </p>
+                    <Link to={LOGIN_ROUTE} className="register__nav auth__link-nav">{''}Войти</Link>
+                     </p>
             </section>
-        </main>
+
     );
 }
 
