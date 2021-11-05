@@ -1,3 +1,5 @@
+import { localhost } from "./consts";
+
 class Auth {
     constructor(options) {
         this._address = options.address;
@@ -40,14 +42,10 @@ class Auth {
         .then((res) => this._checkResponse(res))
       };
 
-     getContent(token) {
+     getContent() {
         return fetch(`${this._address}/users/me`, {
           method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          }
+          credentials: this._credentials,
         })
         .then((res) => this._checkResponse(res))
       }
@@ -55,7 +53,7 @@ class Auth {
 }
 
 const auth = new Auth({
-    address: 'http://localhost:3000',
+    address: localhost,
     headers: {
       'Content-Type': 'application/json'
       },
@@ -63,6 +61,3 @@ const auth = new Auth({
 });
 
 export default auth;
-
-// // 'https://ya-diploma-backend.nomoredomains.club'
-// // 'http://localhost:3000'

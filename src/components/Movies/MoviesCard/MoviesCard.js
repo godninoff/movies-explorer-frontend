@@ -1,13 +1,14 @@
 import React from 'react';
 import './MoviesCard.css';
 import { useLocation } from 'react-router-dom';
+import { MOVIES_ROUTE } from '../../../utils/consts';
 
 function MoviesCard(props) {
     const location = useLocation();
     const [like, setLike] = React.useState(false);
     const likeStatus = () => setLike(!like);
     const likeSwitch = `movie__button ${like ? 'movie__button pushed' : 'movie__button'}`
-    const buttonStatus = `movie__button ${location.pathname === '/movies' ? 'like' : 'remove'}`;
+    const buttonStatus = `movie__button ${location.pathname === MOVIES_ROUTE ? 'like' : 'remove'}`;
     
     return (
         <article className="movie">

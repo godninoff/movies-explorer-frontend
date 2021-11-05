@@ -25,7 +25,7 @@ function Profile(props) {
         const { name, email } = values;
         e.preventDefault();
 
-        props.handleUserUpdate(name, email);
+        props.updateProfile(name, email);
         setIsDisable(false);
     }
 

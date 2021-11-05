@@ -4,7 +4,7 @@ import React from 'react';
 import * as FaIcons from 'react-icons/fa';
 import * as IoIcons from 'react-icons/io';
 import { SidebarData } from './SidebarData/SidebarData';
-import {LANDING_ROUTE, LOGIN_ROUTE, PROFILE_ROUTE, REGISTRATION_ROUTE} from "../../utils/consts"
+import {LANDING_ROUTE, LOGIN_ROUTE, MOVIES_ROUTE, PROFILE_ROUTE, REGISTRATION_ROUTE, SAVED_MOVIES_ROUTE} from "../../utils/consts"
 
 function Navigation() {
 
@@ -22,8 +22,8 @@ function Navigation() {
             <div className={`header__nav-movies ${location.pathname === LANDING_ROUTE ? "header__nav-movies display-none": ''} `}>
                 <div className="header__movies-links">
                     <div className="header__links-container">
-                        <Link to="/movies" className="header__movies">Фильмы</Link> 
-                        <Link to="/saved-movies" className="header__movies header__movies_saved">Сохранённые фильмы</Link> 
+                        <Link to={MOVIES_ROUTE} className="header__movies">Фильмы</Link> 
+                        <Link to={SAVED_MOVIES_ROUTE} className="header__movies header__movies_saved">Сохранённые фильмы</Link> 
                     </div>
                     <div className="heder__account-container"> 
                         <Link to={PROFILE_ROUTE} className="header__account">Аккаунт

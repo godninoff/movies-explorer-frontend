@@ -1,3 +1,5 @@
+import { API_URL } from "./consts";
+
 class MoviesApi {
     constructor(options) {
         this._address = options.address;
@@ -20,7 +22,7 @@ class MoviesApi {
 }
 
 export const moviesApi = new MoviesApi({
-    address: 'https://api.nomoreparties.co/beatfilm-movies',
+    address: API_URL,
     headers: {
       'Content-Type': 'application/json'
       },

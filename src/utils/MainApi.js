@@ -1,3 +1,5 @@
+import { localhost } from "./consts";
+
 class MainApi {
     constructor(options) {
         this._address = options.address;
@@ -75,7 +77,7 @@ class MainApi {
 }
 
 export const mainApi = new MainApi({
-    address: 'http://localhost:3000',
+    address: localhost,
     headers: {
       'Content-Type': 'application/json'
       },

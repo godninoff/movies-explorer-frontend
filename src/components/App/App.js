@@ -12,108 +12,99 @@ import { mainApi } from "../../utils/MainApi";
 // import { moviesApi } from "../../utils/MoviesApi.js";
 import auth from "../../utils/auth";
 import { CurrentUserContext } from "../../context/CurrentUserContext";
-import {LANDING_ROUTE, LOGIN_ROUTE, PROFILE_ROUTE, REGISTRATION_ROUTE} from "../../utils/consts"
+import {LANDING_ROUTE, LOGIN_ROUTE, MOVIES_ROUTE, PROFILE_ROUTE, REGISTRATION_ROUTE, SAVED_MOVIES_ROUTE} from "../../utils/consts"
 
 function App() {
+  const history = useHistory();
   const [loggedIn, setLoggedIn] = React.useState(false);
+  const [preloader, setPreloader] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState({});
   // const [savedMovies, setSavedMovies] = React.useState([]);
   // const [savedMoviesId, setSavedMoviesId] = React.useState([]);
-  const [preloader, setPreloader] = React.useState(false);
-  const history = useHistory();
-
-  const [token, setToken] = React.useState("");
   const [updateRes, setUpdateRes] = React.useState(true);
-  const [registerServerResponse, setRegisterLoginServerResponse] =
+  const [serverResponse, setRserverResponse] =
     React.useState("");
 
   React.useEffect(() => {
-    setPreloader(true);
-    setTimeout(() => {
-      setPreloader(false);
-    }, 700);
-  }, []);
-
-  function tokenCheck() {
-    if (localStorage.getItem("jwt")) {
-      const jwt = localStorage.getItem("jwt");
-      if (jwt) {
-        auth
-          .getContent(jwt)
-          .then((res) => {
-            if (res) {
-              setCurrentUser({ name: res.name, email: res.email });
-              setToken(localStorage.getItem("jwt"));
-              localStorage.setItem("loggedIn", "true");
-              setLoggedIn(JSON.parse(localStorage.getItem("loggedIn")));
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
+    if (loggedIn) {
+      Promise.all([mainApi.getUserInfo()])
+        .then(([data]) => {
+          setCurrentUser(data);
+        })
+        .catch((e) => console.log(e));
     }
-  }
+  }, [loggedIn]);
+
+  const checkToken = React.useCallback(() => {
+    auth.getContent()
+    .then((data) => {
+      if (data) {
+        setLoggedIn(true);
+      }
+    })
+    .catch((e) => {
+      console.log(e);
+    })
+  }, []);
 
   React.useEffect(() => {
-    tokenCheck();
-  }, []);
+    checkToken();
+  }, [checkToken]);
 
-  const handleLoginSubmit = (email, password) => {
+  const onLogin = (email, password) => {
     setPreloader(true);
-    return auth
+    auth
       .login(email, password)
-      .then((data) => {
+      .then(() => {
+        setLoggedIn(true);
         setPreloader(false);
-        // tokenCheck();
-        setCurrentUser({ name: data.name, email: data.email });
-        history.push("/profile");
+        checkToken();
+        history.push(PROFILE_ROUTE);
       })
       .catch((e) => {
         setPreloader(false);
-        setRegisterLoginServerResponse(e.message);
+        setRserverResponse(e.message);
       });
   };
   
-  const handleRegisterSubmit = (email, name, password) => {
+  const onRegister = (email, password, name) => {
     setPreloader(true);
     auth
-      .register(email, name, password)
-      .then((res) => {
+      .register(email, password, name)
+      .then(() => {
         setPreloader(false);
-        // handleLoginSubmit(email, password);
+        onLogin(email, password, name);
       })
       .catch((e) => {
         setPreloader(false);
-        setRegisterLoginServerResponse(e.message);
+        setRserverResponse(e.message);
       });
   };
 
-  // const handleSignOut = () => {
-  //   auth.logout().then(() => {
-  //     setLoggedIn(false);
-  //     setCurrentUser({});
-  //     history.push('/');
-  //   })
-  //   .catch((e) => console.log(e));
-  // }
+  const onSignout = () => {
+    auth.logout().then(() => {
+      setLoggedIn(false);
+      setCurrentUser({});
+      history.push(LANDING_ROUTE);
+    })
+    .catch((e) => console.log(e));
+  }
 
-  const handleUserUpdate = (name, email) => {
+ 
+  const updateProfile = (name, email) => {
     setPreloader(true);
     mainApi
-      .updateUser(name, email, token)
+      .updateUser(name, email)
       .then((data) => {
-        setCurrentUser(data);
-        setUpdateRes(true);
+      setCurrentUser(data);
         setPreloader(false);
       })
-      .catch((err) => {
+      .catch((e) => {
         setPreloader(false);
-        console.log(err.message);
-        setUpdateRes(true);
+        console.log(e.message);
       });
   };
-
+  debugger
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <Switch>
@@ -121,14 +112,14 @@ function App() {
           <Main loggedIn={loggedIn} />
         </Route>
         <Route
-          path="/movies"
+          path={MOVIES_ROUTE}
           component={Movies}
           loggedIn={loggedIn}
           // movies={savedMovies}
         />
 
         <Route
-          path="/saved-movies"
+          path={SAVED_MOVIES_ROUTE}
           component={SavedMovies}
           loggedIn={loggedIn}
           // movies={savedMovies}
@@ -139,22 +130,22 @@ function App() {
           component={Profile}
           loggedIn={loggedIn}
           preloader={preloader}
-          handleUserUpdate={handleUserUpdate}
-          // onSignout={handleSignOut}
+          updateProfile={updateProfile}
+          onSignout={onSignout}
           updateRes={updateRes}
         />
 
         <Route path={REGISTRATION_ROUTE}>
           <Register
-            onRegister={handleRegisterSubmit}
-            onResponse={registerServerResponse}
+            onRegister={onRegister}
+            onResponse={serverResponse}
             preloader={preloader}
           />
         </Route>
         <Route path={LOGIN_ROUTE}>
           <Login
-            onLogin={handleLoginSubmit}
-            onResponse={registerServerResponse}
+            onLogin={onLogin}
+            onResponse={serverResponse}
             preloader={preloader}
           />
         </Route>
