@@ -8,11 +8,10 @@ import Error from "../Error/Error";
 import Profile from "../Profile/Profile";
 import Register from "../Register/Register";
 import Login from "../Login/Login";
-import { mainApi } from "../../utils/MainApi";
-// import { moviesApi } from "../../utils/MoviesApi.js";
-import auth from "../../utils/auth";
 import { CurrentUserContext } from "../../context/CurrentUserContext";
 import {LANDING_ROUTE, LOGIN_ROUTE, MOVIES_ROUTE, PROFILE_ROUTE, REGISTRATION_ROUTE, SAVED_MOVIES_ROUTE} from "../../utils/consts"
+import frontApi from "../../utils/api";
+const api = frontApi.getAPI();
 
 function App() {
   const history = useHistory();
@@ -27,7 +26,7 @@ function App() {
 
   React.useEffect(() => {
     if (loggedIn) {
-      Promise.all([mainApi.getUserInfo()])
+      Promise.all([api.getUserInfo()])
         .then(([data]) => {
           setCurrentUser(data);
         })
@@ -36,7 +35,7 @@ function App() {
   }, [loggedIn]);
 
   const checkToken = React.useCallback(() => {
-    auth.getContent()
+    api.getUserInfo()
     .then((data) => {
       if (data) {
         setLoggedIn(true);
@@ -53,7 +52,7 @@ function App() {
 
   const onLogin = (email, password) => {
     setPreloader(true);
-    auth
+    api
       .login(email, password)
       .then(() => {
         setLoggedIn(true);
@@ -69,7 +68,7 @@ function App() {
   
   const onRegister = (email, password, name) => {
     setPreloader(true);
-    auth
+    api
       .register(email, password, name)
       .then(() => {
         setPreloader(false);
@@ -82,18 +81,18 @@ function App() {
   };
 
   const onSignout = () => {
-    auth.logout().then(() => {
+    api.logout().then(() => {
       setLoggedIn(false);
       setCurrentUser({});
       history.push(LANDING_ROUTE);
     })
-    .catch((e) => console.log(e));
+    .catch((e) => console.error(e));
   }
 
  
   const updateProfile = (name, email) => {
     setPreloader(true);
-    mainApi
+    api
       .updateUser(name, email)
       .then((data) => {
       setCurrentUser(data);
@@ -101,10 +100,10 @@ function App() {
       })
       .catch((e) => {
         setPreloader(false);
-        console.log(e.message);
+        console.error(e.message);
       });
   };
-  debugger
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <Switch>
