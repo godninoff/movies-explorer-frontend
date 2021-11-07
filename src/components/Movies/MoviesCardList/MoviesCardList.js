@@ -4,7 +4,7 @@ import MoviesCard from '../MoviesCard/MoviesCard';
 import { useLocation } from 'react-router-dom';
 import { SAVED_MOVIES_ROUTE } from '../../../utils/consts';
 
-function MoviesCardList() {
+const MoviesCardList = () => {
 
     const location = useLocation();
 

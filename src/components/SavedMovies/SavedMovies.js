@@ -3,7 +3,7 @@ import MoviesCardList from "../Movies/MoviesCardList/MoviesCardList";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 
-function SavedMovies() {
+const SavedMovies = () => {
 
     return (
         <>

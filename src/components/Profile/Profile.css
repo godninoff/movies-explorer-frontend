@@ -33,6 +33,30 @@
     margin: auto;
 }
 
+#success {
+    color: green;
+    font-weight: normal;
+    font-size: 10px;
+    line-height: 12px;
+    margin: auto;
+}
+
+#error {
+    color: #EE3465;
+    font-weight: normal;
+    font-size: 10px;
+    line-height: 12px;
+    margin: auto;
+}
+
+#error {
+    color: #EE3465;
+    font-weight: normal;
+    font-size: 10px;
+    line-height: 12px;
+    margin: auto; 
+}
+
 .profile__form span {
     color: #EE3465;
     font-weight: normal;

@@ -2,7 +2,7 @@ import './Promo.css';
 import promo_map from '../../../images/promo-map.svg';
 
 
-function Promo() {
+const Promo = () => {
     return (
       <section className="promo">
         <div className="promo__container">

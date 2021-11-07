@@ -1,6 +1,6 @@
 import './Techs.css'
 
-function Techs() {
+const Techs = () => {
     return(
         <section className="techs">
             <div className="techs__main-container">

@@ -5,7 +5,7 @@ import useForm from '../../utils/useForm';
 import Preloader from '../Movies/Preloader/Preloader';
 import {REGISTRATION_ROUTE} from "../../utils/consts"
 
-function Login(props) {
+const Login = (props) => {
     const {handleChange, values, errors, resetForm, isValid} = useForm();
 
     const handleSubmit = e => {
@@ -46,7 +46,7 @@ function Login(props) {
                         />
                         <span>{errors.password}</span>
                     </fieldset>
-                    <span>{props.onResponse}</span>
+                    <span>{props.onResponseError}</span>
                     <button className="login__bottom-button auth__bottom-button" disabled={!isValid}>
                         {props.preloader ? <Preloader /> : 'Войти'}
                     </button>

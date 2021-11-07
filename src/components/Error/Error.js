@@ -2,7 +2,7 @@ import './Error.css';
 import { Link } from "react-router-dom";
 import { LANDING_ROUTE } from '../../utils/consts';
 
-function Error() {
+const Error = () => {
 
     return (
         <section className="not-found">

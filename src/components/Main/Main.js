@@ -6,7 +6,7 @@ import Promo from './Promo/Promo';
 import Techs from './Techs/Techs';
 import Footer from '../Footer/Footer';
 
-function Main() {
+const Main = () => {
     return (
       <main>  
         <Header />

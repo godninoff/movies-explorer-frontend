@@ -3,7 +3,7 @@ import Header from '../Header/Header';
 import MoviesCardList from './MoviesCardList/MoviesCardList';
 import SearchForm from './SearchForm/SearchFrom';
 
-function Movies(props) {
+const Movies = (props) => {
     return (
         <main className="movies">
             <Header loggedIn={props.loggedIn} />

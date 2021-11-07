@@ -1,6 +1,6 @@
 import './AboutProject.css';
 
-function AboutProject() {
+const AboutProject = () => {
     return(
         <section className="about-project" id="about">
             <h2 className="about-project__title app__section-title">О проекте</h2>

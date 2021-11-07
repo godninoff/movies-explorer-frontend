@@ -9,20 +9,22 @@ import Profile from "../Profile/Profile";
 import Register from "../Register/Register";
 import Login from "../Login/Login";
 import { mainApi } from "../../utils/MainApi";
+import ProtectedRoute from "../ProtectedRoute/ProtectedRoute"
 // import { moviesApi } from "../../utils/MoviesApi.js";
 import auth from "../../utils/auth";
 import { CurrentUserContext } from "../../context/CurrentUserContext";
-import {LANDING_ROUTE, LOGIN_ROUTE, MOVIES_ROUTE, PROFILE_ROUTE, REGISTRATION_ROUTE, SAVED_MOVIES_ROUTE} from "../../utils/consts"
+import {LANDING_ROUTE, LOGIN_ROUTE, MOVIES_ROUTE, PROFILE_ROUTE, REGISTRATION_ROUTE, SAVED_MOVIES_ROUTE, SUCCESS_MESSAGE} from "../../utils/consts"
 
-function App() {
+const App = () => {
   const history = useHistory();
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [preloader, setPreloader] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState({});
   // const [savedMovies, setSavedMovies] = React.useState([]);
   // const [savedMoviesId, setSavedMoviesId] = React.useState([]);
-  const [updateRes, setUpdateRes] = React.useState(true);
-  const [serverResponse, setRserverResponse] =
+  const [updateProfileSuccessfullMessage, setUpdateProfileSuccessfullMessage] = React.useState({message: '', update: false});
+  
+  const [serverResponseError, setServerResponseError] =
     React.useState("");
 
   React.useEffect(() => {
@@ -36,7 +38,7 @@ function App() {
   }, [loggedIn]);
 
   const checkToken = React.useCallback(() => {
-    auth.getContent()
+    mainApi.getUserInfo()
     .then((data) => {
       if (data) {
         setLoggedIn(true);
@@ -56,14 +58,14 @@ function App() {
     auth
       .login(email, password)
       .then(() => {
+        checkToken()
         setLoggedIn(true);
         setPreloader(false);
-        checkToken();
         history.push(PROFILE_ROUTE);
       })
       .catch((e) => {
         setPreloader(false);
-        setRserverResponse(e.message);
+        setServerResponseError(e.message);
       });
   };
   
@@ -77,12 +79,13 @@ function App() {
       })
       .catch((e) => {
         setPreloader(false);
-        setRserverResponse(e.message);
+        setServerResponseError(e.message);
       });
   };
 
   const onSignout = () => {
     auth.logout().then(() => {
+      localStorage.clear();
       setLoggedIn(false);
       setCurrentUser({});
       history.push(LANDING_ROUTE);
@@ -96,56 +99,59 @@ function App() {
     mainApi
       .updateUser(name, email)
       .then((data) => {
-      setCurrentUser(data);
+        setUpdateProfileSuccessfullMessage({message: SUCCESS_MESSAGE, update: true});
+        setCurrentUser(data);
         setPreloader(false);
       })
       .catch((e) => {
         setPreloader(false);
-        console.log(e.message);
+        
+        console.log(e.message)
+        setServerResponseError(e.message);
       });
   };
-  debugger
+ 
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <Switch>
         <Route exact path={LANDING_ROUTE}>
           <Main loggedIn={loggedIn} />
         </Route>
-        <Route
+        <ProtectedRoute
           path={MOVIES_ROUTE}
           component={Movies}
           loggedIn={loggedIn}
           // movies={savedMovies}
         />
 
-        <Route
+        <ProtectedRoute
           path={SAVED_MOVIES_ROUTE}
           component={SavedMovies}
           loggedIn={loggedIn}
           // movies={savedMovies}
         />
 
-        <Route
+        <ProtectedRoute 
           path={PROFILE_ROUTE}
           component={Profile}
           loggedIn={loggedIn}
           preloader={preloader}
           updateProfile={updateProfile}
           onSignout={onSignout}
-          updateRes={updateRes}
+          onResponseError={serverResponseError}
+          onUpdateSuccessfull={updateProfileSuccessfullMessage}
         />
-
         <Route path={REGISTRATION_ROUTE}>
           <Register
             onRegister={onRegister}
-            onResponse={serverResponse}
+            onResponseError={setServerResponseError}
             preloader={preloader}
           />
         </Route>
         <Route path={LOGIN_ROUTE}>
           <Login
             onLogin={onLogin}
-            onResponse={serverResponse}
+            onResponseError={setServerResponseError}
             preloader={preloader}
           />
         </Route>

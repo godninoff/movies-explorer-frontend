@@ -7,9 +7,9 @@ import useForm from '../../utils/useForm';
 import { LANDING_ROUTE } from '../../utils/consts';
 import Preloader from '../Movies/Preloader/Preloader';
 
-function Profile(props) {
+const Profile = (props) => {
     
-    const {values, setValues, errors, handleChange, isValid} = useForm({});
+    const {values, setValues, errors, handleChange, isValid} = useForm();
     const currentUser = React.useContext(CurrentUserContext);
     const [isDisable, setIsDisable] = React.useState(false);
   
@@ -21,7 +21,7 @@ function Profile(props) {
     currentUser.name !== values.name || 
     currentUser.email !== values.email;
 
-    const handleSubmit = (e) => {
+    const handleSubmit = e => {
         const { name, email } = values;
         e.preventDefault();
 
@@ -63,15 +63,16 @@ function Profile(props) {
                         </div>
                         <span>{errors.email}</span>
                     </fieldset>
-
+                    {props.onUpdateSuccessfull ? (<span id="success">{props.onUpdateSuccessfull.message}</span>) : null}
+                    {props.onResponseError ? (<span id="error">{props.onResponseError}</span>) : null}
                     { !checkValuesInput() || isDisable
                ? <button className="profile__button-edit" type="submit" disabled={true}>Редактировать</button> 
                : <button className="profile__button-edit" type="submit" disabled={!isValid}>{props.preloader ? <Preloader /> : 'Редактировать'}</button> }
-
-                </form>
-                {
+                 {
                     !checkValuesInput() || isDisable ? (<Link to={LANDING_ROUTE} className="profile__exit-link" onClick={props.onSignout}>Выйти из аккаунта</Link>) : ''
                 }
+                </form>
+               
                 
             </section>
         </main>

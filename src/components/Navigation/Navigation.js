@@ -6,7 +6,7 @@ import * as IoIcons from 'react-icons/io';
 import { SidebarData } from './SidebarData/SidebarData';
 import {LANDING_ROUTE, LOGIN_ROUTE, MOVIES_ROUTE, PROFILE_ROUTE, REGISTRATION_ROUTE, SAVED_MOVIES_ROUTE} from "../../utils/consts"
 
-function Navigation() {
+const Navigation = () => {
 
     const location = useLocation(false);
     const [sidebar, setSidebar] = React.useState(false);

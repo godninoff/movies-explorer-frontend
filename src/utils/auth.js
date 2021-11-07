@@ -41,15 +41,6 @@ class Auth {
         })
         .then((res) => this._checkResponse(res))
       };
-
-     getContent() {
-        return fetch(`${this._address}/users/me`, {
-          method: 'GET',
-          credentials: this._credentials,
-        })
-        .then((res) => this._checkResponse(res))
-      }
-      
 }
 
 const auth = new Auth({

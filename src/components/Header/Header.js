@@ -4,7 +4,7 @@ import { useLocation, Link } from 'react-router-dom';
 import Navigation from '../Navigation/Navigation';
 import {LANDING_ROUTE} from "../../utils/consts"
 
-function Header() {
+const Header = () => {
     const location = useLocation(false);
 
     return(

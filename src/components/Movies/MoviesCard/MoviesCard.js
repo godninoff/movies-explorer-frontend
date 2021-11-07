@@ -3,7 +3,7 @@ import './MoviesCard.css';
 import { useLocation } from 'react-router-dom';
 import { MOVIES_ROUTE } from '../../../utils/consts';
 
-function MoviesCard(props) {
+const MoviesCard = (props) => {
     const location = useLocation();
     const [like, setLike] = React.useState(false);
     const likeStatus = () => setLike(!like);

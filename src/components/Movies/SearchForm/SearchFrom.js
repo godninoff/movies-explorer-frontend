@@ -2,7 +2,7 @@ import FilterCheckbox from './FilterCheckbox/FilterCheckbox';
 import './SearchForm.css';
 import useForm from '../../../utils/useForm';
 
-function SearchForm(props) {
+const SearchForm = (props) => {
     const {handleChange, values, errors} = useForm();
 
     const handleSubmit = e => {
