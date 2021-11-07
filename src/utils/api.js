@@ -1,39 +1,47 @@
 const {localhost, BACKEND_URL} = require(`./consts`);
-const axios = require(`axios`);
 const TIMEOUT = 5000; // Таймаут на запрос к серверу
 
 class API {
     constructor(baseURL, timeout) {
-        this._http = axios.create({
-            baseURL,
-            timeout
-        });
+        this._httpRequest = (url, options) => {
+            const fullUrl = url ? `${baseURL}${url}` : baseURL;
+
+            return Promise.race([
+                fetch(fullUrl, options),
+                new Promise((_, reject) => {
+                    let timerId = setTimeout(() => {
+                        reject(new Error(`fail by timeout! > ${timeout} ms`))
+                        clearTimeout(timerId)
+                    }, timeout);
+                })
+            ])
+        };
     }
 
     async _load(url, options) {
         const allOptions = {
             url,
-            withCredentials: true,
+            credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             ...options
         };
-        const response = await this._http.request({...allOptions});
-        if (response.status === 200) {
-            const {data} = response.data;
-            return data;
+        const response = await this._httpRequest(url, {...allOptions});
+        if (response.ok) {
+            return response.json();
         }
-        return Promise.reject(response.data);
+
+        return response.json().then(customMessage => Promise.reject(customMessage));
     }
 
     register(email, password, name) {
         return this._load("/signup", {
             method: 'POST',
-            data: {email, password, name}
+            body:JSON.stringify( {email, password, name})
         });
     };
 
     login(email, password) {
-        return this._load("/signin", {method: 'POST', data: JSON.stringify({email, password})});
+        return this._load("/signin", {method: 'POST', body: JSON.stringify({email, password})});
     };
 
     logout() {
@@ -57,7 +65,7 @@ class API {
     createMovie(movie) {
         return this._load("/signout", {
             method: 'POST',
-            data: JSON.stringify({
+            body: JSON.stringify({
                 country: movie.country,
                 director: movie.director,
                 duration: movie.duration,
