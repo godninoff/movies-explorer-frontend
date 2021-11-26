@@ -21,8 +21,8 @@
 } */
 
 .preloader__container {
-    display: flex;
-    justify-content: center;
-    height: 45px;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  height: 45px;
+  align-items: center;
 }

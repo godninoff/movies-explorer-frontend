@@ -1,167 +1,150 @@
 .profile {
-    max-width: 1280px;
-    margin: auto;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    padding-top: 74px;
+  max-width: 1280px;
+  margin: auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding-top: 74px;
 }
 
 .profile__fields {
-    border: none;
-    padding: 0 0 220px 0;
-    margin: 0;
-    padding-bottom: 123px;
+  border: none;
+  padding: 0 0 220px 0;
+  margin: 0;
+  padding-bottom: 123px;
 }
 
 .profile__title {
-    color: white;
-    font-weight: 500;
-    font-size: 24px;
-    line-height: 29px;
-    text-align: center;
-    padding-bottom: 123px;
-    margin: 0;
+  color: white;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 29px;
+  text-align: center;
+  padding-bottom: 123px;
+  margin: 0;
 }
 
 .profile__form {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    width: 410px;
-    border-bottom: 1px solid #424242;
-    margin: auto;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  width: 410px;
+  border-bottom: 1px solid #424242;
+  margin: auto;
 }
 
-#success {
-    color: green;
-    font-weight: normal;
-    font-size: 10px;
-    line-height: 12px;
-    margin: auto;
+.profile__message_success {
+  color: green;
 }
 
-#error {
-    color: #EE3465;
-    font-weight: normal;
-    font-size: 10px;
-    line-height: 12px;
-    margin: auto;
+.profile__message_error {
+  color: #ee3465;
 }
 
-#error {
-    color: #EE3465;
-    font-weight: normal;
-    font-size: 10px;
-    line-height: 12px;
-    margin: auto; 
-}
-
-.profile__form span {
-    color: #EE3465;
-    font-weight: normal;
-    font-size: 10px;
-    line-height: 12px;
-    margin: 0;
+.profile__message {
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 12px;
+  margin: auto;
 }
 
 .profile__form:last-of-type {
-    border: none;
+  border: none;
 }
 
 .profile__form-name {
-    color: white;
-    font-weight: 500;
-    font-size: 11px;
-    line-height: 13px;
-    margin: 0;
+  color: white;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 13px;
+  margin: 0;
 }
 
 .profile__form:first-child {
-    padding-bottom: 16px;
+  padding-bottom: 16px;
 }
 
 .profile__form:last-of-type {
-    padding-top: 17px;
+  padding-top: 17px;
 }
 
 .profile__form-input {
-    background-color: var(--section-bg-color);
-    font-weight: normal;
-    font-size: 11px;
-    line-height: 13px;
-    border: none;
-    text-align: left;
-    outline: none;
-    color: white;
-    padding: 0;
-    margin: 0;
+  background-color: var(--section-bg-color);
+  font-weight: normal;
+  font-size: 11px;
+  line-height: 13px;
+  border: none;
+  text-align: left;
+  outline: none;
+  color: white;
+  padding: 0;
+  margin: 0;
 }
 
-::-webkit-input-placeholder { 
-    color:    white;
- }
+::-webkit-input-placeholder {
+  color: white;
+}
 
 .profile__button-edit {
-    background-color: var(--section-bg-color);
-    color: white;
-    font-weight: normal;
-    font-size: 13px;
-    line-height: 16px;
-    text-align: center;
-    border: none;
-    cursor: pointer;
-    padding: 0 0 16px;
+  background-color: var(--section-bg-color);
+  color: white;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 16px;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  padding: 0 0 16px;
 }
 
 .profile__button-edit:disabled {
-    cursor: not-allowed;
-    opacity: 0.3;
+  cursor: not-allowed;
+  opacity: 0.3;
 }
 
 .profile__button-edit:hover {
-    opacity: 0.6;
-    transition: all 500ms ease;
+  opacity: 0.6;
+  transition: all 500ms ease;
 }
 
 .profile__exit-link {
-    color: #EE3465;
-    font-weight: 500;
-    font-size: 13px;
-    line-height: 16px;
-    text-align: center;
-    text-decoration: none;
+  color: #ee3465;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 16px;
+  text-align: center;
+  text-decoration: none;
 }
 
 .profile__exit-link:hover {
-    opacity: 0.6;
-    transition: all 500ms ease;
+  opacity: 0.6;
+  transition: all 500ms ease;
 }
 
 @media screen and (max-width: 968px) {
-    .profile__title {
-        padding-bottom: 98px;
-    }
+  .profile__title {
+    padding-bottom: 98px;
+  }
 
-    .profile__fields {
-        padding-bottom: 210px;
-    }
+  .profile__fields {
+    padding-bottom: 210px;
+  }
 }
 
 @media screen and (max-width: 440px) {
-    .profile {
-        padding-top: 70px;
-    }
+  .profile {
+    padding-top: 70px;
+  }
 
-    .profile__title {
-        padding-bottom: 80px;
-    }
+  .profile__title {
+    padding-bottom: 80px;
+  }
 
-    .profile__form {
-        width: 260px;
-    }
+  .profile__form {
+    width: 260px;
+  }
 
-    .profile__fields {
-        padding-bottom: 379px;
-    }
+  .profile__fields {
+    padding-bottom: 379px;
+  }
 }

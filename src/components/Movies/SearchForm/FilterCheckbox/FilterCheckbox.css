@@ -1,65 +1,65 @@
 .checkbox {
-    position: relative;
-    width: 36px;
-    height: 20px;  
-    background-color: var(--techs-bg-color);
-    transition: .2s;
-    border-radius: 20px;
-    cursor: pointer;
-    appearance: none;
-    margin-right: 14px;
+  position: relative;
+  width: 36px;
+  height: 20px;
+  background-color: var(--techs-bg-color);
+  transition: 0.2s;
+  border-radius: 20px;
+  cursor: pointer;
+  appearance: none;
+  margin-right: 14px;
 }
 
 .checkbox:checked {
-    background: #3DDC84;
+  background: #3ddc84;
 }
 
 .checkbox::before {
-    content: '';
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    border-radius: 100px;
-    background: white;
-    top: 2px;
-    left: 2px;
-    transition: .2s;
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 100px;
+  background: white;
+  top: 2px;
+  left: 2px;
+  transition: 0.2s;
 }
 
 .checkbox:checked::before {
-    transform: translateX(16px);
-    background: white;
+  transform: translateX(16px);
+  background: white;
 }
 
 .search__toggle-checkbox {
-    max-width: 170px;
-    display: flex;
-    color: white;
-    font-weight: normal;
-    font-size: 13px;
-    line-height: 18px;
-    margin-top: 32px;
+  max-width: 170px;
+  display: flex;
+  color: white;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 18px;
+  margin-top: 32px;
 }
 
 @media screen and (max-width: 968px) {
-    .search__toggle-checkbox {
-        float: right;
-        flex-direction: row-reverse;
-    }
+  .search__toggle-checkbox {
+    float: right;
+    flex-direction: row-reverse;
+  }
 
-    .checkbox {
-        margin-right: 0px;
-        margin-left: 16px;
-    }
+  .checkbox {
+    margin-right: 0px;
+    margin-left: 16px;
+  }
 }
 
 @media screen and (max-width: 720px) {
-    .search__toggle-checkbox {
-        float: none;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 41px;
-        margin-bottom: 51px;
-        font-size: 11px;
-    } 
+  .search__toggle-checkbox {
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 41px;
+    margin-bottom: 51px;
+    font-size: 11px;
+  }
 }
