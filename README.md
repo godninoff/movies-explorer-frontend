@@ -14,6 +14,6 @@
 
 
 ## Ссылки:    
-* Клиент: [https://strannoe.mesto.nomoredomains.work/sign-in](https://ya-diploma-movies.nomoredomains.club)
-* Сервер: [https://api.weirdplace.students.nomoredomains.club](https://ya-diploma-backend.nomoredomains.club)
+* Клиент: [https://ya-diploma-movies.nomoredomains.club](https://ya-diploma-movies.nomoredomains.club)
+* Сервер: [https://ya-diploma-backend.nomoredomains.club](https://ya-diploma-backend.nomoredomains.club)
 
