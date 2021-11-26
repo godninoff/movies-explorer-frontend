@@ -17,6 +17,7 @@ const Navigation = (props) => {
 
   const showSidebar = () => setSidebar(!sidebar);
 
+<<<<<<< HEAD
   return (
     <div
       className={props.loggedIn ? "header__navigation" : "header__nav-landing"}
@@ -52,6 +53,9 @@ const Navigation = (props) => {
           </Link>
         </div>
       )}
+=======
+    const showSidebar = () => setSidebar(!sidebar);
+>>>>>>> 6866ba1c49b90b5aa90089282e65667eb6e58236
 
       {props.loggedIn && (
         <button className="header__navbar">

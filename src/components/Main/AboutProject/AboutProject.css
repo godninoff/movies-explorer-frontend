@@ -18,6 +18,10 @@
   margin-right: 25px;
 }
 
+.about-project__stages:first-of-type {
+    margin-right: 25px;
+}
+
 .about-project__stages-text {
   font-weight: normal;
   font-size: 20px;

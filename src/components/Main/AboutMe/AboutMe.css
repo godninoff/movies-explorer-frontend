@@ -74,6 +74,10 @@
   margin-right: 25px;
 }
 
+.about-me__printed-content {
+    margin-right: 25px;
+}
+
 @media screen and (max-width: 968px) {
   .about-me {
     padding: 90px 50px;
