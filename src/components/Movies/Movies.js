@@ -15,10 +15,10 @@ const Movies = (props) => {
       />
       {props.preloader && <Preloader />}
       <MoviesCardList
+        resetFilters={props.resetFilters}
         movies={props.movies}
         onSaveMovie={props.onSaveMovie}
         onRemoveMovie={props.onRemoveMovie}
-        savedMovies={props.savedMovies}
         movieSearchError={props.movieSearchError}
       />
       <Footer />

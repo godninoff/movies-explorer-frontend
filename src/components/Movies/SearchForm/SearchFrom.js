@@ -9,7 +9,7 @@ const SearchForm = (props) => {
 
   const search = (e) => {
     e.preventDefault();
-    props.searchHandler(inputEl.current.value);
+    props.searchHandler(inputEl.current?.value.trim());
   };
 
   return (
