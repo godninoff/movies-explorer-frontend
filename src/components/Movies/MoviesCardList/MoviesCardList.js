@@ -30,6 +30,7 @@ const MoviesCardList = (props) => {
     const cardsOnPage = numberOfCards(window.screen.width);
     setNumberOfInitialCards(cardsOnPage.cardsPerPage);
     setNumberOfAdditionalCards(cardsOnPage.addCards);
+    props.resetMoviesToShow();
   }, [sizeWindow]);
 
   React.useEffect(() => {
@@ -43,10 +44,7 @@ const MoviesCardList = (props) => {
     window.addEventListener("resize", resize);
   }, []);
 
-  const moreCardRender =
-    location.pathname === MOVIES_ROUTE
-      ? props.movies.slice(0, numberOfInitialCards)
-      : JSON.parse(localStorage.getItem("savedMovies")) || [];
+  const moreCardRender = props.movies.slice(0, numberOfInitialCards);
   const renderMoviesList = moreCardRender.map((card, num) => {
     return (
       <MoviesCard
@@ -54,7 +52,6 @@ const MoviesCardList = (props) => {
         key={num}
         onSaveMovie={props.onSaveMovie}
         onRemoveMovie={props.onRemoveMovie}
-        savedMovies={localStorage.getItem("savedMovies")}
       />
     );
   });

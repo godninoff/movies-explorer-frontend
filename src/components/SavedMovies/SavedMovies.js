@@ -5,6 +5,7 @@ import Footer from "../Footer/Footer";
 import Preloader from "../Movies/Preloader/Preloader";
 
 const SavedMovies = (props) => {
+
   return (
     <>
       <Header loggedIn={props.loggedIn} />
@@ -17,6 +18,7 @@ const SavedMovies = (props) => {
         movies={props.movies}
         savedMovies={props.savedMovies}
         onRemoveMovie={props.onRemoveMovie}
+        resetMoviesToShow={props.resetMoviesToShow}
       />
       <Footer />
     </>

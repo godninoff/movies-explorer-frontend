@@ -18,8 +18,8 @@ const Movies = (props) => {
         movies={props.movies}
         onSaveMovie={props.onSaveMovie}
         onRemoveMovie={props.onRemoveMovie}
-        savedMovies={props.savedMovies}
         movieSearchError={props.movieSearchError}
+        resetMoviesToShow={props.resetMoviesToShow}
       />
       <Footer />
     </main>
