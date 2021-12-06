@@ -44,11 +44,11 @@ const MoviesCardList = (props) => {
   }, []);
 
   const moreCardRender = props.movies.slice(0, numberOfInitialCards);
-  const renderMoviesList = moreCardRender.map((card, num) => {
+  const renderMoviesList = moreCardRender.map((card) => {
     return (
       <MoviesCard
         card={card}
-        key={num}
+        key={card.id}
         onSaveMovie={props.onSaveMovie}
         onRemoveMovie={props.onRemoveMovie}
       />

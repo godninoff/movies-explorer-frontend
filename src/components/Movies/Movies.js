@@ -10,8 +10,11 @@ const Movies = (props) => {
     <main className="movies">
       <Header loggedIn={props.loggedIn} />
       <SearchForm
+        isShorted={props.isShorted}
+        searchTerm={props.searchTerm}
         searchHandler={props.searchHandler}
         shortMoviesSwitcher={props.shortMoviesSwitcher}
+        setInitFilter={props.setInitFilter}
       />
       {props.preloader && <Preloader />}
       <MoviesCardList

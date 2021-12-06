@@ -7,6 +7,7 @@ const FilterCheckbox = (props) => {
         type="checkbox"
         className="checkbox"
         name="short"
+        checked={props.isShorted}
         id="box"
         onChange={(e) => props.shortMoviesSwitcher(e.target.checked)}
       />

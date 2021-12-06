@@ -159,7 +159,11 @@ const App = () => {
   // =======================================
   //              MOVIES ACTIONS
   // =======================================
-
+  const [searchFilters, setSearchFilters] = React.useState({
+    searchTerm: "",
+    isShorted: false
+  });
+  const [initFilter, setInitFilter] = React.useState(false);
   const saveMovie = (savedMovie) => {
     Object.assign(savedMovie, { movieId: savedMovie.id });
     let savedMovies = JSON.parse(localStorage.getItem("savedMovies")) || [];
@@ -211,9 +215,11 @@ const App = () => {
 
   React.useEffect(() => {
     setPreloader(true);
+    console.log(searchFilters)
     switch (currenLocation.pathname) {
       case MOVIES_ROUTE:
         if (moviesData.searchTerm) {
+          setSearchFilters(prevState => ({...prevState, searchTerm: moviesData.searchTerm}));
           setMoviesData(prevState => {
             return {
               ...prevState,
@@ -222,6 +228,7 @@ const App = () => {
           });
         }
         if (moviesData.isShorted && moviesData.searchTerm) {
+          setSearchFilters({searchTerm: moviesData.searchTerm, isShorted: moviesData.isShorted});
           setMoviesData(prevState => {
             return {
               ...prevState,
@@ -258,10 +265,23 @@ const App = () => {
         break;
     }
     setPreloader(false);
-  }, [moviesData.searchTerm, moviesData.isShorted]);
+    setInitFilter(false)
+  }, [moviesData.isShorted, currenLocation.pathname, initFilter]);
 
   const resetFilters = () => {
-    setMoviesData({...moviesData, moviesToShow: [], isShorted: false, searchTerm: ''});
+    let searchTerm = "";
+    let isShorted = false;
+    if (currenLocation.pathname === MOVIES_ROUTE) {
+      if (searchFilters.searchTerm) {
+        searchTerm = searchFilters.searchTerm;
+      }
+
+      if (searchFilters.isShorted) {
+        isShorted = searchFilters.isShorted;
+      }
+    }
+
+    setMoviesData({...moviesData, moviesToShow: [], isShorted, searchTerm});
   };
 
   return (
@@ -284,6 +304,7 @@ const App = () => {
           onSaveMovie={saveMovie}
           onRemoveMovie={movieRemove}
           resetFilters={resetFilters}
+          setInitFilter={setInitFilter}
         />
 
         <ProtectedRoute
@@ -297,6 +318,7 @@ const App = () => {
           isShorted={moviesData.isShorted}
           preloader={preloader}
           resetFilters={resetFilters}
+          setInitFilter={setInitFilter}
         />
 
         <ProtectedRoute
