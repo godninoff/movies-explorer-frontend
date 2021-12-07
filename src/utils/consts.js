@@ -10,6 +10,8 @@ export const BACKEND_URL = "https://ya-diploma-backend.nomoredomains.club";
 export const API_URL = "https://api.nomoreparties.co/beatfilm-movies";
 export const SUCCESS_MESSAGE = "Обновление успешно!";
 export const USERNAME_PATTERN_CHECK = "[а-яА-ЯёЁa-zA-Z- ]{1,}";
+export const EMAIL_PATTERN =
+  "^[a-zA-Z0-9_'+*/^&=?~{}-](.?[a-zA-Z0-9_'+*/^&=?~{}-])*@((d{1,3}.d{1,3}.d{1,3}.d{1,3}(:d{1,3})?)|(((([a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9])|([a-zA-Z0-9]{1,2}))[.]{1})+([a-zA-Z]{2,6})))$";
 export const SHORT_MOVIE_DURATION = 40;
 export const CARDS_AT_SCREEN = {
   pcMonitor: {

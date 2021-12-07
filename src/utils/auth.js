@@ -1,5 +1,6 @@
-import { BACKEND_URL, 
-  // localhost 
+import {
+  // BACKEND_URL,
+  localhost,
 } from "./consts";
 
 class Auth {
@@ -43,7 +44,7 @@ class Auth {
 }
 
 const auth = new Auth({
-  address: BACKEND_URL,
+  address: localhost,
   headers: {
     "Content-Type": "application/json",
   },

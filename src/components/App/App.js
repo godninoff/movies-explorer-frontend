@@ -1,5 +1,11 @@
 import React from "react";
-import { Route, Switch, useHistory, Redirect } from "react-router-dom";
+import {
+  Route,
+  Switch,
+  useHistory,
+  Redirect,
+  useLocation,
+} from "react-router-dom";
 import "./App.css";
 import Main from "../Main/Main";
 import Movies from "../Movies/Movies";
@@ -27,9 +33,14 @@ import {
 
 const App = () => {
   const history = useHistory();
-  const [loggedIn, setLoggedIn] = React.useState(false);
+  const location = useLocation();
+  const [loggedIn, setLoggedIn] = React.useState(
+    JSON.parse(localStorage.getItem("auth"))
+  );
   const [currentUser, setCurrentUser] = React.useState({});
   const [preloader, setPreloader] = React.useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [token, setToken] = React.useState("");
 
   const [movies, setMovies] = React.useState([]);
   const [savedMovies, setSavedMovies] = React.useState([]);
@@ -38,7 +49,7 @@ const App = () => {
   //   USER & MOVIES PROMISES, CHECK TOKEN
   // =======================================
 
-  const [movieSearchError, setMovieSearchError] = React.useState('');
+  const [movieSearchError, setMovieSearchError] = React.useState("");
 
   React.useEffect(() => {
     if (loggedIn) {
@@ -58,22 +69,28 @@ const App = () => {
     }
   }, [loggedIn]);
 
-  const checkToken = React.useCallback(() => {
-    mainApi
-      .getUserInfo()
-      .then((data) => {
-        if (data) {
-          setLoggedIn(true);
-        }
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }, []);
+  const checkToken = () => {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      mainApi
+        .getUserInfo(jwt)
+        .then((res) => {
+          if (res) {
+            setCurrentUser({ name: res.name, email: res.email });
+            setToken(localStorage.getItem("jwt"));
+            localStorage.setItem("auth", true);
+            setLoggedIn(JSON.parse(localStorage.getItem("auth")));
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  };
 
   React.useEffect(() => {
     checkToken();
-  }, [checkToken]);
+  }, []);
 
   // =======================================
   //              USER ACTIONS
@@ -118,15 +135,11 @@ const App = () => {
   };
 
   const onSignout = () => {
-    auth
-      .logout()
-      .then(() => {
-        localStorage.clear();
-        setLoggedIn(false);
-        setCurrentUser({ name: "", email: "" });
-        history.push(LANDING_ROUTE);
-      })
-      .catch((e) => console.log(e));
+    localStorage.setItem("auth", false);
+    setLoggedIn(JSON.parse(localStorage.getItem("auth")));
+    localStorage.clear();
+    setMovies([]);
+    history.push(LANDING_ROUTE);
   };
 
   const updateProfile = (name, email) => {
@@ -196,35 +209,70 @@ const App = () => {
     setIsShorted(!isShorted);
   };
 
-  const filterData = (cards = [], isShorted, searchTerm) => {
-    let result = cards;
-    if (isShorted) {
-      result = result.filter(
-        ({ duration }) => duration <= SHORT_MOVIE_DURATION
-      );
-    }
-    if (searchTerm !== "") {
-      result = result.filter((card) => {
-        return Object.values(card)
-          .join(" ")
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase());
-      });
-    }
-    if (!isShorted && !searchTerm) {
-      return [];
-    } 
-    return result;
-  };
-
   React.useEffect(() => {
+    let updatedMovies = [];
     setPreloader(true);
 
-    
-    const filteredCards = filterData(movies, isShorted, searchTerm);
-    setMoviesToShow(filteredCards);
+    // eslint-disable-next-line default-case
+    switch (location.pathname) {
+      case MOVIES_ROUTE:
+        if (searchTerm !== "") {
+          updatedMovies = movies.filter((card) => {
+            return Object.values(card)
+              .join(" ")
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase());
+          });
+        }
+
+        if (searchTerm !== "" && isShorted) {
+          updatedMovies = movies.filter((card) => {
+            return (
+              Object.values(card)
+                .join(" ")
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) &&
+              card.duration <= SHORT_MOVIE_DURATION
+            );
+          });
+        }
+
+        break;
+      case SAVED_MOVIES_ROUTE:
+        updatedMovies = savedMovies;
+        if (searchTerm !== "") {
+          updatedMovies = savedMovies.filter((card) => {
+            return Object.values(card)
+              .join(" ")
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase());
+          });
+        }
+
+        if (isShorted) {
+          updatedMovies = savedMovies.filter(
+            ({ duration }) => duration <= SHORT_MOVIE_DURATION
+          );
+        }
+
+        if (searchTerm !== "" && isShorted) {
+          updatedMovies = savedMovies.filter((card) => {
+            return (
+              Object.values(card)
+                .join(" ")
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) &&
+              card.duration <= SHORT_MOVIE_DURATION
+            );
+          });
+        }
+        break;
+    }
+
+    setMoviesToShow(updatedMovies);
     setPreloader(false);
-  }, [setMoviesToShow, movies, isShorted, searchTerm]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isShorted, searchTerm, location.pathname]);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>

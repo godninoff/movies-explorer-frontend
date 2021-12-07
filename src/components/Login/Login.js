@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import HeaderLogo from "../Header/HeaderLogo/HeaderLogo";
 import useForm from "../../utils/useForm";
 import Preloader from "../Movies/Preloader/Preloader";
-import { REGISTRATION_ROUTE } from "../../utils/consts";
+import { EMAIL_PATTERN, REGISTRATION_ROUTE } from "../../utils/consts";
 
 const Login = (props) => {
   const { handleChange, values, errors, resetForm, isValid } = useForm();
@@ -31,6 +31,7 @@ const Login = (props) => {
               required
               value={values.email || ""}
               onChange={handleChange}
+              pattern={EMAIL_PATTERN}
             />
             {errors.email && (
               <span className="validation-span">{errors.email}</span>

@@ -3,7 +3,11 @@ import { Link } from "react-router-dom";
 import HeaderLogo from "../Header/HeaderLogo/HeaderLogo";
 import useForm from "../../utils/useForm";
 import Preloader from "../Movies/Preloader/Preloader";
-import { LOGIN_ROUTE, USERNAME_PATTERN_CHECK } from "../../utils/consts";
+import {
+  EMAIL_PATTERN,
+  LOGIN_ROUTE,
+  USERNAME_PATTERN_CHECK,
+} from "../../utils/consts";
 
 const Register = (props) => {
   const { handleChange, values, errors, resetForm, isValid } = useForm();
@@ -46,6 +50,7 @@ const Register = (props) => {
             required
             value={values.email || ""}
             onChange={handleChange}
+            pattern={EMAIL_PATTERN}
           />
           {errors.email && (
             <span className="validation-span">{errors.email}</span>
@@ -65,7 +70,7 @@ const Register = (props) => {
             <span className="validation-span">{errors.password}</span>
           )}
         </fieldset>
-        
+
         {props.onResponseError && (
           <span className="validation-span">{props.onResponseError}</span>
         )}

@@ -4,7 +4,11 @@ import "./Profile.css";
 import { Link } from "react-router-dom";
 import { CurrentUserContext } from "../../context/CurrentUserContext";
 import useForm from "../../utils/useForm";
-import { LANDING_ROUTE, USERNAME_PATTERN_CHECK } from "../../utils/consts";
+import {
+  EMAIL_PATTERN,
+  LANDING_ROUTE,
+  USERNAME_PATTERN_CHECK,
+} from "../../utils/consts";
 import Preloader from "../Movies/Preloader/Preloader";
 
 const Profile = (props) => {
@@ -75,6 +79,7 @@ const Profile = (props) => {
                 required
                 onChange={handleInputChange}
                 value={values.email || ""}
+                pattern={EMAIL_PATTERN}
               />
             </div>
             {errors.email && (

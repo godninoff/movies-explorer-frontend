@@ -47,11 +47,11 @@ const MoviesCardList = (props) => {
     location.pathname === MOVIES_ROUTE
       ? props.movies.slice(0, numberOfInitialCards)
       : JSON.parse(localStorage.getItem("savedMovies")) || [];
-  const renderMoviesList = moreCardRender.map((card, num) => {
+  const renderMoviesList = moreCardRender.map((card) => {
     return (
       <MoviesCard
         card={card}
-        key={num}
+        key={card.id}
         onSaveMovie={props.onSaveMovie}
         onRemoveMovie={props.onRemoveMovie}
         savedMovies={localStorage.getItem("savedMovies")}
