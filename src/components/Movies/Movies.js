@@ -4,21 +4,25 @@ import MoviesCardList from "./MoviesCardList/MoviesCardList";
 import SearchForm from "./SearchForm/SearchFrom";
 import React from "react";
 import Preloader from "./Preloader/Preloader";
+import {CurrentUserContext} from "../../context/CurrentUserContext";
 
 const Movies = (props) => {
+    const {userMoviesData} = React.useContext(CurrentUserContext);
+    const [moviesData] = userMoviesData;
   return (
     <main className="movies">
       <Header loggedIn={props.loggedIn} />
       <SearchForm
+        searchTerm={moviesData.movies.searchTerm}
+        isChecked={moviesData.movies.isShorted}
         searchHandler={props.searchHandler}
         shortMoviesSwitcher={props.shortMoviesSwitcher}
       />
       {props.preloader && <Preloader />}
       <MoviesCardList
-        movies={props.movies}
+        movies={moviesData.movies.toShow}
         onSaveMovie={props.onSaveMovie}
         onRemoveMovie={props.onRemoveMovie}
-        savedMovies={props.savedMovies}
         movieSearchError={props.movieSearchError}
       />
       <Footer />

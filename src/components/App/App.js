@@ -42,9 +42,6 @@ const App = () => {
   // eslint-disable-next-line no-unused-vars
   const [token, setToken] = React.useState("");
 
-  const [movies, setMovies] = React.useState([]);
-  const [savedMovies, setSavedMovies] = React.useState([]);
-
   // =======================================
   //   USER & MOVIES PROMISES, CHECK TOKEN
   // =======================================
@@ -56,11 +53,13 @@ const App = () => {
       Promise.all([mainApi.getUserInfo(), moviesApi.getMoviesInfo()])
         .then(([user, movies]) => {
           setCurrentUser(user);
-          setMovies(movies);
-
-          let allCards = JSON.parse(localStorage.getItem("savedMovies")) || [];
-
-          setSavedMovies(allCards);
+          setMoviesData(prevState => ({
+            ...prevState,
+            movies: {
+              ...prevState.movies,
+              total: movies
+            }
+          }));
         })
         .catch((e) => {
           console.log(e);
@@ -138,7 +137,6 @@ const App = () => {
     localStorage.setItem("auth", false);
     setLoggedIn(JSON.parse(localStorage.getItem("auth")));
     localStorage.clear();
-    setMovies([]);
     history.push(LANDING_ROUTE);
   };
 
@@ -170,13 +168,11 @@ const App = () => {
   // =======================================
 
   const saveMovie = (card) => {
-    Object.assign(card, { movieId: card.id });
-    let allCards = JSON.parse(localStorage.getItem("savedMovies")) || [];
-    localStorage.setItem("savedMovies", JSON.stringify([...allCards, card]));
+    console.log(card)
     mainApi
       .createMovie(card)
       .then(() => {
-        setSavedMovies(allCards);
+        // setSavedMovies
       })
       .catch((e) => console.log(e));
   };
@@ -188,7 +184,7 @@ const App = () => {
     mainApi
       .deleteMovieById(card.id)
       .then(() => {
-        setSavedMovies((state) => state.filter((c) => c.id !== card.id));
+        // deleteMovie from saved
       })
       .catch((e) => console.log(e));
   };
@@ -197,85 +193,87 @@ const App = () => {
   //              SEARCH ACTIONS
   // =======================================
 
-  const [moviesToShow, setMoviesToShow] = React.useState([]);
-  const [searchTerm, setSearchTerm] = React.useState("");
-  const [isShorted, setIsShorted] = React.useState(false);
-
-  const searchHandler = (searchTerm) => {
-    setSearchTerm(searchTerm);
+  const moviesDataFromLocalStorage = localStorage.getItem("moviesData");
+  const defaultMoviesData = {
+    movies: {
+      total: [],
+      toShow: [],
+      isShorted: false,
+      searchTerm: ""
+    },
+    savedMovies: {
+      total: [],
+      toShow: [],
+      isShorted: false,
+      searchTerm: ""
+    }
   };
+  const [moviesData, setMoviesData] = React.useState(moviesDataFromLocalStorage ? JSON.parse(moviesDataFromLocalStorage) : defaultMoviesData);
 
-  const shortMoviesSwitcher = () => {
-    setIsShorted(!isShorted);
+  const getCurrentRouteName = () => {
+    const routeNames = {
+      [MOVIES_ROUTE]: "movies",
+      [SAVED_MOVIES_ROUTE]: "savedMovies"
+    };
+
+    return routeNames[location.pathname];
+  };
+  const filterMovies = (isShorted, searchTerm, moviesToFilter) => {
+    let result = moviesToFilter;
+
+    if (searchTerm) {
+      result = result.filter((movie) => {
+        return (
+            Object.values(movie)
+                .join(" ")
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())
+        );
+      })
+    }
+
+    if (isShorted) {
+      result = result.filter(({duration}) => duration <= SHORT_MOVIE_DURATION);
+    }
+
+    return result;
+  };
+  const searchHandler = (searchTerm) => {
+    const currentRoute = getCurrentRouteName();
+
+    setMoviesData(prevState => ({
+      ...prevState,
+      [currentRoute]: {
+        ...prevState[currentRoute],
+        toShow: filterMovies(prevState[currentRoute].isShorted, searchTerm, prevState[currentRoute].total),
+        searchTerm
+      }
+    }));
+  };
+  const shortMoviesSwitcher = (isShorted) => {
+    const currentRoute = getCurrentRouteName();
+
+    setMoviesData(prevState => ({
+      ...prevState,
+      [currentRoute]: {
+        ...prevState[currentRoute],
+        toShow: filterMovies(isShorted, prevState[currentRoute].searchTerm, prevState[currentRoute].total),
+        isShorted
+      }
+    }));
   };
 
   React.useEffect(() => {
-    let updatedMovies = [];
-    setPreloader(true);
-
-    // eslint-disable-next-line default-case
-    switch (location.pathname) {
-      case MOVIES_ROUTE:
-        if (searchTerm !== "") {
-          updatedMovies = movies.filter((card) => {
-            return Object.values(card)
-              .join(" ")
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase());
-          });
-        }
-
-        if (searchTerm !== "" && isShorted) {
-          updatedMovies = movies.filter((card) => {
-            return (
-              Object.values(card)
-                .join(" ")
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase()) &&
-              card.duration <= SHORT_MOVIE_DURATION
-            );
-          });
-        }
-
-        break;
-      case SAVED_MOVIES_ROUTE:
-        updatedMovies = savedMovies;
-        if (searchTerm !== "") {
-          updatedMovies = savedMovies.filter((card) => {
-            return Object.values(card)
-              .join(" ")
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase());
-          });
-        }
-
-        if (isShorted) {
-          updatedMovies = savedMovies.filter(
-            ({ duration }) => duration <= SHORT_MOVIE_DURATION
-          );
-        }
-
-        if (searchTerm !== "" && isShorted) {
-          updatedMovies = savedMovies.filter((card) => {
-            return (
-              Object.values(card)
-                .join(" ")
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase()) &&
-              card.duration <= SHORT_MOVIE_DURATION
-            );
-          });
-        }
-        break;
-    }
-
-    setMoviesToShow(updatedMovies);
-    setPreloader(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isShorted, searchTerm, location.pathname]);
+    localStorage.setItem("moviesData", JSON.stringify(moviesData))
+  })
 
   return (
-    <CurrentUserContext.Provider value={currentUser}>
+    <CurrentUserContext.Provider
+        value={{
+          currentUserData: [currentUser, setCurrentUser],
+          userMoviesData: [moviesData, setMoviesData]
+        }}
+        moviesData={moviesData}>
       <Switch>
         <Route exact path={LANDING_ROUTE}>
           <Main loggedIn={loggedIn} />
@@ -284,13 +282,9 @@ const App = () => {
           path={MOVIES_ROUTE}
           component={Movies}
           loggedIn={loggedIn}
-          movies={moviesToShow}
-          savedMovies={savedMovies}
-          searchTerm={searchTerm}
           searchHandler={searchHandler}
           preloader={preloader}
           shortMoviesSwitcher={shortMoviesSwitcher}
-          isShorted={isShorted}
           movieSearchError={movieSearchError}
           onSaveMovie={saveMovie}
           onRemoveMovie={movieRemove}
@@ -300,12 +294,9 @@ const App = () => {
           path={SAVED_MOVIES_ROUTE}
           component={SavedMovies}
           loggedIn={loggedIn}
-          movies={moviesToShow}
           onRemoveMovie={movieRemove}
-          savedMovies={savedMovies}
           searchHandler={searchHandler}
           shortMoviesSwitcher={shortMoviesSwitcher}
-          isShorted={isShorted}
           preloader={preloader}
         />
 

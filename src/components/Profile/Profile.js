@@ -13,7 +13,8 @@ import Preloader from "../Movies/Preloader/Preloader";
 
 const Profile = (props) => {
   const { values, setValues, errors, handleChange, isValid } = useForm();
-  const currentUser = React.useContext(CurrentUserContext);
+  const {currentUserData} = React.useContext(CurrentUserContext);
+  const [currentUser] = currentUserData;
   const [isDisable, setIsDisable] = React.useState(false);
   const [isInputChanging, setIsInputChanging] = React.useState(false);
 
