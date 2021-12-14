@@ -1,11 +1,7 @@
 import "./MoviesCardList.css";
 import MoviesCard from "../MoviesCard/MoviesCard";
 import { useLocation } from "react-router-dom";
-import {
-  CARDS_AT_SCREEN,
-  MOVIES_ROUTE,
-  SAVED_MOVIES_ROUTE,
-} from "../../../utils/consts";
+import { CARDS_AT_SCREEN, SAVED_MOVIES_ROUTE } from "../../../utils/consts";
 import React from "react";
 
 const MoviesCardList = (props) => {
@@ -30,6 +26,8 @@ const MoviesCardList = (props) => {
     const cardsOnPage = numberOfCards(window.screen.width);
     setNumberOfInitialCards(cardsOnPage.cardsPerPage);
     setNumberOfAdditionalCards(cardsOnPage.addCards);
+    props.resetFilters();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sizeWindow]);
 
   React.useEffect(() => {
@@ -43,10 +41,7 @@ const MoviesCardList = (props) => {
     window.addEventListener("resize", resize);
   }, []);
 
-  const moreCardRender =
-    location.pathname === MOVIES_ROUTE
-      ? props.movies.slice(0, numberOfInitialCards)
-      : JSON.parse(localStorage.getItem("savedMovies")) || [];
+  const moreCardRender = props.movies.slice(0, numberOfInitialCards);
   const renderMoviesList = moreCardRender.map((card) => {
     return (
       <MoviesCard
@@ -54,7 +49,6 @@ const MoviesCardList = (props) => {
         key={card.id}
         onSaveMovie={props.onSaveMovie}
         onRemoveMovie={props.onRemoveMovie}
-        savedMovies={localStorage.getItem("savedMovies")}
       />
     );
   });

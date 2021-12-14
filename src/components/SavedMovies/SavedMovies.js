@@ -11,11 +11,13 @@ const SavedMovies = (props) => {
       <SearchForm
         searchHandler={props.searchHandler}
         shortMoviesSwitcher={props.shortMoviesSwitcher}
+        isShorted={props.isShorted}
+        setInitFilter={props.setInitFilter}
       />
       {props.preloader && <Preloader />}
       <MoviesCardList
+        resetFilters={props.resetFilters}
         movies={props.movies}
-        savedMovies={props.savedMovies}
         onRemoveMovie={props.onRemoveMovie}
       />
       <Footer />

@@ -9,7 +9,12 @@ const SearchForm = (props) => {
 
   const search = (e) => {
     e.preventDefault();
-    props.searchHandler(inputEl.current.value);
+    props.setInitFilter(true);
+  };
+
+  const handleTextInput = (e) => {
+    props.searchHandler(e?.target?.value?.trim());
+    handleChange(e);
   };
 
   return (
@@ -27,14 +32,17 @@ const SearchForm = (props) => {
                 placeholder="Фильм"
                 id="searchForm"
                 value={props.searchTerm}
-                onChange={handleChange}
+                onChange={(e) => handleTextInput(e)}
               />
               <button className="search__button" type="submit">
                 Найти
               </button>
             </div>
             {errors.searchForm && <p>{errors.searchForm}</p>}
-            <FilterCheckbox shortMoviesSwitcher={props.shortMoviesSwitcher} />
+            <FilterCheckbox
+              shortMoviesSwitcher={props.shortMoviesSwitcher}
+              isShorted={props.isShorted}
+            />
           </fieldset>
         </form>
       </div>

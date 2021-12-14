@@ -33,7 +33,6 @@ import {
 
 const App = () => {
   const history = useHistory();
-  const location = useLocation();
   const [loggedIn, setLoggedIn] = React.useState(
     JSON.parse(localStorage.getItem("auth"))
   );
@@ -42,25 +41,35 @@ const App = () => {
   // eslint-disable-next-line no-unused-vars
   const [token, setToken] = React.useState("");
 
-  const [movies, setMovies] = React.useState([]);
-  const [savedMovies, setSavedMovies] = React.useState([]);
+  const [moviesData, setMoviesData] = React.useState({
+    moviesToShow: [],
+    savedMoviesToShow: [],
+    movies: [],
+    savedMovies: [],
+    searchTerm: "",
+    isShorted: false,
+  });
 
   // =======================================
   //   USER & MOVIES PROMISES, CHECK TOKEN
   // =======================================
 
   const [movieSearchError, setMovieSearchError] = React.useState("");
+  const currenLocation = useLocation();
 
   React.useEffect(() => {
     if (loggedIn) {
       Promise.all([mainApi.getUserInfo(), moviesApi.getMoviesInfo()])
         .then(([user, movies]) => {
           setCurrentUser(user);
-          setMovies(movies);
-
-          let allCards = JSON.parse(localStorage.getItem("savedMovies")) || [];
-
-          setSavedMovies(allCards);
+          const savedMovies =
+            JSON.parse(localStorage.getItem("savedMovies")) || [];
+          setMoviesData((prevState) => ({
+            ...prevState,
+            movies,
+            savedMovies,
+            savedMoviesToShow: savedMovies,
+          }));
         })
         .catch((e) => {
           console.log(e);
@@ -138,7 +147,7 @@ const App = () => {
     localStorage.setItem("auth", false);
     setLoggedIn(JSON.parse(localStorage.getItem("auth")));
     localStorage.clear();
-    setMovies([]);
+    setMoviesData([]);
     history.push(LANDING_ROUTE);
   };
 
@@ -168,27 +177,43 @@ const App = () => {
   // =======================================
   //              MOVIES ACTIONS
   // =======================================
+  const [searchFilters, setSearchFilters] = React.useState({
+    searchTerm: "",
+    isShorted: false,
+  });
+  const [initFilter, setInitFilter] = React.useState(false);
 
-  const saveMovie = (card) => {
-    Object.assign(card, { movieId: card.id });
-    let allCards = JSON.parse(localStorage.getItem("savedMovies")) || [];
-    localStorage.setItem("savedMovies", JSON.stringify([...allCards, card]));
+  const saveMovie = (savedMovie) => {
+    Object.assign(savedMovie, { movieId: savedMovie.id });
+    let savedMovies = JSON.parse(localStorage.getItem("savedMovies")) || [];
+    const updatedMovies = [...savedMovies, savedMovie];
+    localStorage.setItem("savedMovies", JSON.stringify(updatedMovies));
+    setMoviesData({
+      ...moviesData,
+      savedMovies: updatedMovies,
+      savedMoviesToShow: updatedMovies,
+    });
     mainApi
-      .createMovie(card)
+      .createMovie(savedMovie)
       .then(() => {
-        setSavedMovies(allCards);
+        // Save movie to BD
       })
       .catch((e) => console.log(e));
   };
 
-  const movieRemove = (card) => {
-    let allCards = JSON.parse(localStorage.getItem("savedMovies")) || [];
-    allCards = allCards.filter((c) => c.id !== card.id);
-    localStorage.setItem("savedMovies", JSON.stringify(allCards));
+  const movieRemove = (removedMovie) => {
+    let savedMovies = JSON.parse(localStorage.getItem("savedMovies")) || [];
+    savedMovies = savedMovies.filter((c) => c.id !== removedMovie.id);
+    localStorage.setItem("savedMovies", JSON.stringify(savedMovies));
+    setMoviesData({
+      ...moviesData,
+      savedMovies,
+      savedMoviesToShow: savedMovies,
+    });
     mainApi
-      .deleteMovieById(card.id)
+      .deleteMovieById(removedMovie.id)
       .then(() => {
-        setSavedMovies((state) => state.filter((c) => c.id !== card.id));
+        // Remove movie from BD
       })
       .catch((e) => console.log(e));
   };
@@ -197,82 +222,125 @@ const App = () => {
   //              SEARCH ACTIONS
   // =======================================
 
-  const [moviesToShow, setMoviesToShow] = React.useState([]);
-  const [searchTerm, setSearchTerm] = React.useState("");
-  const [isShorted, setIsShorted] = React.useState(false);
+  // const [moviesToShow, setMoviesToShow] = React.useState([]);
+  // const [searchTerm, setSearchTerm] = React.useState("");
+
+  // const [isShorted, setIsShorted] = React.useState(false);
 
   const searchHandler = (searchTerm) => {
-    setSearchTerm(searchTerm);
+    setMoviesData((prevState) => ({ ...prevState, searchTerm }));
   };
 
+  // React.useEffect(() => {
+  //   localStorage.setItem("foundMovies", JSON.stringify(moviesToShow));
+  //   localStorage.setItem("checkbox", JSON.stringify(isShorted));
+  //   localStorage.setItem("searchField", JSON.stringify(searchTerm));
+  // });
+
   const shortMoviesSwitcher = () => {
-    setIsShorted(!isShorted);
+    setMoviesData((prevState) => ({
+      ...prevState,
+      isShorted: !moviesData.isShorted,
+    }));
+  };
+
+  const filterMovies = (data, searchTerm) => {
+    return data.filter((item) => {
+      return Object.values(item)
+        .join(" ")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+    });
   };
 
   React.useEffect(() => {
-    let updatedMovies = [];
     setPreloader(true);
-
     // eslint-disable-next-line default-case
-    switch (location.pathname) {
+    switch (currenLocation.pathname) {
       case MOVIES_ROUTE:
-        if (searchTerm !== "") {
-          updatedMovies = movies.filter((card) => {
-            return Object.values(card)
-              .join(" ")
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase());
+        if (moviesData.searchTerm) {
+          setSearchFilters((prevState) => ({
+            ...prevState,
+            searchTerm: moviesData.searchTerm,
+          }));
+          setMoviesData((prevState) => {
+            return {
+              ...prevState,
+              moviesToShow: filterMovies(
+                prevState.movies,
+                prevState.searchTerm
+              ),
+            };
           });
         }
-
-        if (searchTerm !== "" && isShorted) {
-          updatedMovies = movies.filter((card) => {
-            return (
-              Object.values(card)
-                .join(" ")
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase()) &&
-              card.duration <= SHORT_MOVIE_DURATION
-            );
+        if (moviesData.isShorted && moviesData.searchTerm) {
+          setSearchFilters({
+            searchTerm: moviesData.searchTerm,
+            isShorted: moviesData.isShorted,
+          });
+          setMoviesData((prevState) => {
+            return {
+              ...prevState,
+              moviesToShow: prevState.moviesToShow.filter(
+                ({ duration }) => duration <= SHORT_MOVIE_DURATION
+              ),
+            };
           });
         }
-
         break;
       case SAVED_MOVIES_ROUTE:
-        updatedMovies = savedMovies;
-        if (searchTerm !== "") {
-          updatedMovies = savedMovies.filter((card) => {
-            return Object.values(card)
-              .join(" ")
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase());
+        if (moviesData.searchTerm) {
+          setMoviesData((prevState) => {
+            return {
+              ...prevState,
+              savedMoviesToShow: filterMovies(
+                prevState.savedMovies,
+                prevState.searchTerm
+              ),
+            };
           });
         }
 
-        if (isShorted) {
-          updatedMovies = savedMovies.filter(
-            ({ duration }) => duration <= SHORT_MOVIE_DURATION
-          );
-        }
-
-        if (searchTerm !== "" && isShorted) {
-          updatedMovies = savedMovies.filter((card) => {
-            return (
-              Object.values(card)
-                .join(" ")
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase()) &&
-              card.duration <= SHORT_MOVIE_DURATION
-            );
+        if (moviesData.isShorted) {
+          setMoviesData((prevState) => {
+            return {
+              ...prevState,
+              savedMoviesToShow: prevState.savedMovies.filter(
+                ({ duration }) =>
+                  moviesData.isShorted && duration <= SHORT_MOVIE_DURATION
+              ),
+            };
+          });
+        } else if (!moviesData.isShorted && !moviesData.searchTerm) {
+          setMoviesData((prevState) => {
+            return {
+              ...prevState,
+              savedMoviesToShow: prevState.savedMovies,
+            };
           });
         }
         break;
     }
-
-    setMoviesToShow(updatedMovies);
     setPreloader(false);
+    setInitFilter(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isShorted, searchTerm, location.pathname]);
+  }, [moviesData.isShorted, currenLocation.pathname, initFilter]);
+
+  const resetFilters = () => {
+    let searchTerm = "";
+    let isShorted = false;
+    if (currenLocation.pathname === MOVIES_ROUTE) {
+      if (searchFilters.searchTerm) {
+        searchTerm = searchFilters.searchTerm;
+      }
+
+      if (searchFilters.isShorted) {
+        isShorted = searchFilters.isShorted;
+      }
+    }
+
+    setMoviesData({ ...moviesData, moviesToShow: [], isShorted, searchTerm });
+  };
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -284,29 +352,31 @@ const App = () => {
           path={MOVIES_ROUTE}
           component={Movies}
           loggedIn={loggedIn}
-          movies={moviesToShow}
-          savedMovies={savedMovies}
-          searchTerm={searchTerm}
+          movies={moviesData.moviesToShow}
+          searchTerm={moviesData.searchTerm}
           searchHandler={searchHandler}
           preloader={preloader}
           shortMoviesSwitcher={shortMoviesSwitcher}
-          isShorted={isShorted}
+          isShorted={moviesData.isShorted}
           movieSearchError={movieSearchError}
           onSaveMovie={saveMovie}
           onRemoveMovie={movieRemove}
+          resetFilters={resetFilters}
+          setInitFilter={setInitFilter}
         />
 
         <ProtectedRoute
           path={SAVED_MOVIES_ROUTE}
           component={SavedMovies}
           loggedIn={loggedIn}
-          movies={moviesToShow}
+          movies={moviesData.savedMoviesToShow}
           onRemoveMovie={movieRemove}
-          savedMovies={savedMovies}
           searchHandler={searchHandler}
           shortMoviesSwitcher={shortMoviesSwitcher}
-          isShorted={isShorted}
+          isShorted={moviesData.isShorted}
           preloader={preloader}
+          resetFilters={resetFilters}
+          setInitFilter={setInitFilter}
         />
 
         <ProtectedRoute

@@ -43,7 +43,7 @@ class MainApi {
       credentials: this._credentials,
       body: JSON.stringify({
         country: movie.country || "data",
-        director: movie.director,
+        director: movie.director || "data",
         duration: movie.duration,
         year: movie.year,
         description: movie.description,

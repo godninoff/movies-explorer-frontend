@@ -6,6 +6,7 @@ const FilterCheckbox = (props) => {
       <input
         type="checkbox"
         className="checkbox"
+        checked={props.isShorted}
         name="short"
         id="box"
         onChange={props.shortMoviesSwitcher}
