@@ -42,12 +42,18 @@ const App = () => {
   const [token, setToken] = React.useState("");
 
   const [moviesData, setMoviesData] = React.useState({
-    moviesToShow: [],
+    moviesToShow: localStorage.getItem("foundMovies")
+      ? JSON.parse(localStorage.getItem("foundMovies"))
+      : [],
     savedMoviesToShow: [],
     movies: [],
     savedMovies: [],
-    searchTerm: "",
-    isShorted: false,
+    searchTerm: localStorage.getItem("searchField")
+      ? JSON.parse(localStorage.getItem("searchField"))
+      : "",
+    isShorted: localStorage.getItem("checkbox")
+      ? JSON.parse(localStorage.getItem("checkbox"))
+      : false,
   });
 
   // =======================================
@@ -118,6 +124,7 @@ const App = () => {
       .then((data) => {
         checkToken();
         localStorage.setItem("jwt", data.token);
+        localStorage.setItem("auth", true);
         setLoggedIn(true);
 
         setPreloader(false);
@@ -222,20 +229,23 @@ const App = () => {
   //              SEARCH ACTIONS
   // =======================================
 
-  // const [moviesToShow, setMoviesToShow] = React.useState([]);
-  // const [searchTerm, setSearchTerm] = React.useState("");
-
-  // const [isShorted, setIsShorted] = React.useState(false);
-
   const searchHandler = (searchTerm) => {
     setMoviesData((prevState) => ({ ...prevState, searchTerm }));
   };
 
-  // React.useEffect(() => {
-  //   localStorage.setItem("foundMovies", JSON.stringify(moviesToShow));
-  //   localStorage.setItem("checkbox", JSON.stringify(isShorted));
-  //   localStorage.setItem("searchField", JSON.stringify(searchTerm));
-  // });
+  React.useEffect(() => {
+    if (loggedIn) {
+      localStorage.setItem(
+        "foundMovies",
+        JSON.stringify(moviesData.moviesToShow)
+      );
+      localStorage.setItem("checkbox", JSON.stringify(moviesData.isShorted));
+      localStorage.setItem(
+        "searchField",
+        JSON.stringify(moviesData.searchTerm)
+      );
+    }
+  });
 
   const shortMoviesSwitcher = () => {
     setMoviesData((prevState) => ({
@@ -321,6 +331,7 @@ const App = () => {
         }
         break;
     }
+
     setPreloader(false);
     setInitFilter(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
