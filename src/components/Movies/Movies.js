@@ -6,6 +6,8 @@ import React from "react";
 import Preloader from "./Preloader/Preloader";
 
 const Movies = (props) => {
+  const storageSearchField = JSON.parse(localStorage.getItem("searchField"));
+
   return (
     <main className="movies">
       <Header loggedIn={props.loggedIn} />
@@ -15,6 +17,7 @@ const Movies = (props) => {
         isShorted={props.isShorted}
         searchTerm={props.searchTerm}
         setInitFilter={props.setInitFilter}
+        storageSearchField={storageSearchField}
       />
       {props.preloader && <Preloader />}
       <MoviesCardList

@@ -1,6 +1,6 @@
 import {
-  BACKEND_URL,
-  // localhost,
+  // BACKEND_URL,
+  localhost,
 } from "./consts";
 
 class MainApi {
@@ -67,7 +67,7 @@ class MainApi {
 }
 
 export const mainApi = new MainApi({
-  address: BACKEND_URL,
+  address: localhost,
   headers: {
     "Content-Type": "application/json",
   },

@@ -4,7 +4,7 @@ import useForm from "../../../utils/useForm";
 import React from "react";
 
 const SearchForm = (props) => {
-  const { handleChange, errors } = useForm();
+  const { handleChange, errors, values } = useForm();
   const inputEl = React.useRef("");
 
   const search = (e) => {
@@ -31,7 +31,7 @@ const SearchForm = (props) => {
                 type="text"
                 placeholder="Фильм"
                 id="searchForm"
-                value={props.searchTerm}
+                value={values.searchForm || props.storageSearchField || ""}
                 onChange={(e) => handleTextInput(e)}
               />
               <button className="search__button" type="submit">

@@ -38,8 +38,6 @@ const App = () => {
   );
   const [currentUser, setCurrentUser] = React.useState({});
   const [preloader, setPreloader] = React.useState(false);
-  // eslint-disable-next-line no-unused-vars
-  const [token, setToken] = React.useState("");
 
   const [moviesData, setMoviesData] = React.useState({
     moviesToShow: localStorage.getItem("foundMovies")
@@ -48,12 +46,8 @@ const App = () => {
     savedMoviesToShow: [],
     movies: [],
     savedMovies: [],
-    searchTerm: localStorage.getItem("searchField")
-      ? JSON.parse(localStorage.getItem("searchField"))
-      : "",
-    isShorted: localStorage.getItem("checkbox")
-      ? JSON.parse(localStorage.getItem("checkbox"))
-      : false,
+    searchTerm: "",
+    isShorted: false,
   });
 
   // =======================================
@@ -85,22 +79,19 @@ const App = () => {
   }, [loggedIn]);
 
   const checkToken = () => {
-    const jwt = localStorage.getItem("jwt");
-    if (jwt) {
-      mainApi
-        .getUserInfo(jwt)
-        .then((res) => {
-          if (res) {
-            setCurrentUser({ name: res.name, email: res.email });
-            setToken(localStorage.getItem("jwt"));
-            localStorage.setItem("auth", true);
-            setLoggedIn(JSON.parse(localStorage.getItem("auth")));
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    }
+    mainApi
+      .getUserInfo()
+      .then((res) => {
+        if (res) {
+          setCurrentUser({ name: res.name, email: res.email });
+
+          localStorage.setItem("auth", true);
+          setLoggedIn(JSON.parse(localStorage.getItem("auth")));
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   React.useEffect(() => {
@@ -123,7 +114,7 @@ const App = () => {
       .login(email, password)
       .then((data) => {
         checkToken();
-        localStorage.setItem("jwt", data.token);
+
         localStorage.setItem("auth", true);
         setLoggedIn(true);
 
@@ -151,11 +142,16 @@ const App = () => {
   };
 
   const onSignout = () => {
-    localStorage.setItem("auth", false);
-    setLoggedIn(JSON.parse(localStorage.getItem("auth")));
-    localStorage.clear();
-    setMoviesData([]);
-    history.push(LANDING_ROUTE);
+    auth
+      .logout()
+      .then(() => {
+        localStorage.setItem("auth", false);
+        setLoggedIn(JSON.parse(localStorage.getItem("auth")));
+        localStorage.clear();
+        setMoviesData([]);
+        history.push(LANDING_ROUTE);
+      })
+      .catch((e) => console.log(e));
   };
 
   const updateProfile = (name, email) => {
@@ -231,27 +227,26 @@ const App = () => {
 
   const searchHandler = (searchTerm) => {
     setMoviesData((prevState) => ({ ...prevState, searchTerm }));
+    localStorage.setItem("searchField", JSON.stringify(searchTerm));
   };
 
   React.useEffect(() => {
-    if (loggedIn) {
-      localStorage.setItem(
-        "foundMovies",
-        JSON.stringify(moviesData.moviesToShow)
-      );
-      localStorage.setItem("checkbox", JSON.stringify(moviesData.isShorted));
-      localStorage.setItem(
-        "searchField",
-        JSON.stringify(moviesData.searchTerm)
-      );
+    const checkbox = JSON.parse(localStorage.getItem("checkbox"));
+    if (checkbox) {
+      setMoviesData({ isShorted: checkbox });
     }
-  });
+  }, []);
 
   const shortMoviesSwitcher = () => {
     setMoviesData((prevState) => ({
       ...prevState,
       isShorted: !moviesData.isShorted,
     }));
+    localStorage.setItem("checkbox", JSON.stringify(!moviesData.isShorted));
+    localStorage.setItem(
+      "foundMovies",
+      JSON.stringify(moviesData.moviesToShow)
+    );
   };
 
   const filterMovies = (data, searchTerm) => {
@@ -263,8 +258,7 @@ const App = () => {
     });
   };
 
-  React.useEffect(() => {
-    setPreloader(true);
+  const setFilters = React.useCallback(() => {
     // eslint-disable-next-line default-case
     switch (currenLocation.pathname) {
       case MOVIES_ROUTE:
@@ -331,11 +325,16 @@ const App = () => {
         }
         break;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [moviesData.isShorted, currenLocation.pathname, initFilter]);
+
+  React.useEffect(() => {
+    setPreloader(true);
+    setFilters();
 
     setPreloader(false);
     setInitFilter(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [moviesData.isShorted, currenLocation.pathname, initFilter]);
+  }, [setFilters]);
 
   const resetFilters = () => {
     let searchTerm = "";
