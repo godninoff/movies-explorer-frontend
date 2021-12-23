@@ -26,7 +26,6 @@ const MoviesCardList = (props) => {
     const cardsOnPage = numberOfCards(window.screen.width);
     setNumberOfInitialCards(cardsOnPage.cardsPerPage);
     setNumberOfAdditionalCards(cardsOnPage.addCards);
-    props.resetFilters();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sizeWindow]);
 

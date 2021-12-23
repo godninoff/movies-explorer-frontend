@@ -40,9 +40,7 @@ const App = () => {
   const [preloader, setPreloader] = React.useState(false);
 
   const [moviesData, setMoviesData] = React.useState({
-    moviesToShow: localStorage.getItem("foundMovies")
-      ? JSON.parse(localStorage.getItem("foundMovies"))
-      : [],
+    moviesToShow: [],
     savedMoviesToShow: [],
     movies: [],
     savedMovies: [],
@@ -64,11 +62,16 @@ const App = () => {
           setCurrentUser(user);
           const savedMovies =
             JSON.parse(localStorage.getItem("savedMovies")) || [];
+            const foundMovies = JSON.parse(localStorage.getItem("foundMovies")) || []
+            const checkbox = JSON.parse(localStorage.getItem("checkbox"));
+
           setMoviesData((prevState) => ({
             ...prevState,
+            moviesToShow: foundMovies,
             movies,
             savedMovies,
             savedMoviesToShow: savedMovies,
+            isShorted: checkbox,
           }));
         })
         .catch((e) => {
@@ -84,7 +87,6 @@ const App = () => {
       .then((res) => {
         if (res) {
           setCurrentUser({ name: res.name, email: res.email });
-
           localStorage.setItem("auth", true);
           setLoggedIn(JSON.parse(localStorage.getItem("auth")));
         }
@@ -112,7 +114,7 @@ const App = () => {
     setPreloader(true);
     auth
       .login(email, password)
-      .then((data) => {
+      .then(() => {
         checkToken();
 
         localStorage.setItem("auth", true);
@@ -148,7 +150,7 @@ const App = () => {
         localStorage.setItem("auth", false);
         setLoggedIn(JSON.parse(localStorage.getItem("auth")));
         localStorage.clear();
-        setMoviesData([]);
+        setMoviesData({ moviesToShow: [] });
         history.push(LANDING_ROUTE);
       })
       .catch((e) => console.log(e));
@@ -180,6 +182,7 @@ const App = () => {
   // =======================================
   //              MOVIES ACTIONS
   // =======================================
+  // eslint-disable-next-line no-unused-vars
   const [searchFilters, setSearchFilters] = React.useState({
     searchTerm: "",
     isShorted: false,
@@ -230,23 +233,11 @@ const App = () => {
     localStorage.setItem("searchField", JSON.stringify(searchTerm));
   };
 
-  React.useEffect(() => {
-    const checkbox = JSON.parse(localStorage.getItem("checkbox"));
-    if (checkbox) {
-      setMoviesData({ isShorted: checkbox });
-    }
-  }, []);
-
   const shortMoviesSwitcher = () => {
     setMoviesData((prevState) => ({
       ...prevState,
       isShorted: !moviesData.isShorted,
     }));
-    localStorage.setItem("checkbox", JSON.stringify(!moviesData.isShorted));
-    localStorage.setItem(
-      "foundMovies",
-      JSON.stringify(moviesData.moviesToShow)
-    );
   };
 
   const filterMovies = (data, searchTerm) => {
@@ -258,7 +249,9 @@ const App = () => {
     });
   };
 
-  const setFilters = React.useCallback(() => {
+  React.useEffect(() => {
+    setPreloader(true);
+
     // eslint-disable-next-line default-case
     switch (currenLocation.pathname) {
       case MOVIES_ROUTE:
@@ -276,8 +269,11 @@ const App = () => {
               ),
             };
           });
+    localStorage.setItem("foundMovies", JSON.stringify(moviesData.moviesToShow));
+          
         }
         if (moviesData.isShorted && moviesData.searchTerm) {
+          
           setSearchFilters({
             searchTerm: moviesData.searchTerm,
             isShorted: moviesData.isShorted,
@@ -290,6 +286,7 @@ const App = () => {
               ),
             };
           });
+          localStorage.setItem("checkbox", JSON.stringify(moviesData.isShorted))
         }
         break;
       case SAVED_MOVIES_ROUTE:
@@ -325,32 +322,11 @@ const App = () => {
         }
         break;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [moviesData.isShorted, currenLocation.pathname, initFilter]);
-
-  React.useEffect(() => {
-    setPreloader(true);
-    setFilters();
 
     setPreloader(false);
     setInitFilter(false);
-  }, [setFilters]);
-
-  const resetFilters = () => {
-    let searchTerm = "";
-    let isShorted = false;
-    if (currenLocation.pathname === MOVIES_ROUTE) {
-      if (searchFilters.searchTerm) {
-        searchTerm = searchFilters.searchTerm;
-      }
-
-      if (searchFilters.isShorted) {
-        isShorted = searchFilters.isShorted;
-      }
-    }
-
-    setMoviesData({ ...moviesData, moviesToShow: [], isShorted, searchTerm });
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [moviesData.isShorted, currenLocation.pathname, initFilter]);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -371,7 +347,6 @@ const App = () => {
           movieSearchError={movieSearchError}
           onSaveMovie={saveMovie}
           onRemoveMovie={movieRemove}
-          resetFilters={resetFilters}
           setInitFilter={setInitFilter}
         />
 
@@ -385,7 +360,6 @@ const App = () => {
           shortMoviesSwitcher={shortMoviesSwitcher}
           isShorted={moviesData.isShorted}
           preloader={preloader}
-          resetFilters={resetFilters}
           setInitFilter={setInitFilter}
         />
 
