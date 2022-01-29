@@ -43,9 +43,11 @@ const App = () => {
     moviesToShow: [],
     savedMoviesToShow: [],
     movies: [],
-    savedMovies: [],
+    userMovies: [],
     searchTerm: "",
     isShorted: false,
+    searchTerm2: "",
+    isShorted2: false,
   });
 
   // =======================================
@@ -57,21 +59,23 @@ const App = () => {
 
   React.useEffect(() => {
     if (loggedIn) {
-      Promise.all([mainApi.getUserInfo(), moviesApi.getMoviesInfo()])
-        .then(([user, movies]) => {
+      Promise.all([
+        mainApi.getUserInfo(),
+        moviesApi.getMoviesInfo(),
+        mainApi.getUserMovies(),
+      ])
+        .then(([user, movies, userMovies]) => {
           setCurrentUser(user);
           const savedMovies =
-            JSON.parse(localStorage.getItem("savedMovies")) || [];
-            const foundMovies = JSON.parse(localStorage.getItem("foundMovies")) || []
-            const checkbox = JSON.parse(localStorage.getItem("checkbox"));
-
+            JSON.parse(localStorage.getItem("userMovies")) || [];
+          const foundMovies =
+            JSON.parse(localStorage.getItem("foundMovies")) || [];
           setMoviesData((prevState) => ({
             ...prevState,
-            moviesToShow: foundMovies,
+            moviesToShow: movies,
             movies,
-            savedMovies,
             savedMoviesToShow: savedMovies,
-            isShorted: checkbox,
+            userMovies,
           }));
         })
         .catch((e) => {
@@ -80,25 +84,6 @@ const App = () => {
         });
     }
   }, [loggedIn]);
-
-  const checkToken = () => {
-    mainApi
-      .getUserInfo()
-      .then((res) => {
-        if (res) {
-          setCurrentUser({ name: res.name, email: res.email });
-          localStorage.setItem("auth", true);
-          setLoggedIn(JSON.parse(localStorage.getItem("auth")));
-        }
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
-
-  React.useEffect(() => {
-    checkToken();
-  }, []);
 
   // =======================================
   //              USER ACTIONS
@@ -115,11 +100,10 @@ const App = () => {
     auth
       .login(email, password)
       .then(() => {
-        checkToken();
-
         localStorage.setItem("auth", true);
-        setLoggedIn(true);
+        localStorage.setItem("user", JSON.stringify(currentUser));
 
+        setLoggedIn(JSON.parse(localStorage.getItem("auth")));
         setPreloader(false);
         history.push(MOVIES_ROUTE);
       })
@@ -150,7 +134,6 @@ const App = () => {
         localStorage.setItem("auth", false);
         setLoggedIn(JSON.parse(localStorage.getItem("auth")));
         localStorage.clear();
-        setMoviesData({ moviesToShow: [] });
         history.push(LANDING_ROUTE);
       })
       .catch((e) => console.log(e));
@@ -183,43 +166,35 @@ const App = () => {
   //              MOVIES ACTIONS
   // =======================================
   // eslint-disable-next-line no-unused-vars
-  const [searchFilters, setSearchFilters] = React.useState({
-    searchTerm: "",
-    isShorted: false,
-  });
   const [initFilter, setInitFilter] = React.useState(false);
 
   const saveMovie = (savedMovie) => {
     Object.assign(savedMovie, { movieId: savedMovie.id });
-    let savedMovies = JSON.parse(localStorage.getItem("savedMovies")) || [];
-    const updatedMovies = [...savedMovies, savedMovie];
-    localStorage.setItem("savedMovies", JSON.stringify(updatedMovies));
-    setMoviesData({
-      ...moviesData,
-      savedMovies: updatedMovies,
-      savedMoviesToShow: updatedMovies,
-    });
+    const movieId = moviesData.userMovies.find(
+      (movie) => movie.movieId === savedMovie.id
+    );
+    if (movieId) {
+      console.log("Данный фильм уже в Вашей коллекции!");
+      return;
+    }
+
     mainApi
       .createMovie(savedMovie)
-      .then(() => {
-        // Save movie to BD
+      .then((res) => {
+        setMoviesData({
+          ...moviesData,
+          userMovies: res,
+          savedMoviesToShow: res,
+        });
       })
       .catch((e) => console.log(e));
   };
 
   const movieRemove = (removedMovie) => {
-    let savedMovies = JSON.parse(localStorage.getItem("savedMovies")) || [];
-    savedMovies = savedMovies.filter((c) => c.id !== removedMovie.id);
-    localStorage.setItem("savedMovies", JSON.stringify(savedMovies));
-    setMoviesData({
-      ...moviesData,
-      savedMovies,
-      savedMoviesToShow: savedMovies,
-    });
     mainApi
-      .deleteMovieById(removedMovie.id)
-      .then(() => {
-        // Remove movie from BD
+      .deleteMovieById(removedMovie._id)
+      .then((res) => {
+        setMoviesData(moviesData.filter(({ _id }) => _id !== res._id));
       })
       .catch((e) => console.log(e));
   };
@@ -230,7 +205,6 @@ const App = () => {
 
   const searchHandler = (searchTerm) => {
     setMoviesData((prevState) => ({ ...prevState, searchTerm }));
-    localStorage.setItem("searchField", JSON.stringify(searchTerm));
   };
 
   const shortMoviesSwitcher = () => {
@@ -256,7 +230,7 @@ const App = () => {
     switch (currenLocation.pathname) {
       case MOVIES_ROUTE:
         if (moviesData.searchTerm) {
-          setSearchFilters((prevState) => ({
+          setMoviesData((prevState) => ({
             ...prevState,
             searchTerm: moviesData.searchTerm,
           }));
@@ -269,14 +243,19 @@ const App = () => {
               ),
             };
           });
-    localStorage.setItem("foundMovies", JSON.stringify(moviesData.moviesToShow));
-          
+          localStorage.setItem(
+            "searchField",
+            JSON.stringify(moviesData.searchTerm)
+          );
+          localStorage.setItem(
+            "foundMovies",
+            JSON.stringify(moviesData.moviesToShow)
+          );
         }
-        if (moviesData.isShorted && moviesData.searchTerm) {
-          
-          setSearchFilters({
+        if (moviesData.isShorted2 && moviesData.searchTerm) {
+          setMoviesData({
             searchTerm: moviesData.searchTerm,
-            isShorted: moviesData.isShorted,
+            isShorted2: moviesData.isShorted2,
           });
           setMoviesData((prevState) => {
             return {
@@ -286,16 +265,20 @@ const App = () => {
               ),
             };
           });
-          localStorage.setItem("checkbox", JSON.stringify(moviesData.isShorted))
+          localStorage.setItem(
+            "checkbox",
+            JSON.stringify(moviesData.isShorted2)
+          );
         }
         break;
+
       case SAVED_MOVIES_ROUTE:
         if (moviesData.searchTerm) {
           setMoviesData((prevState) => {
             return {
               ...prevState,
               savedMoviesToShow: filterMovies(
-                prevState.savedMovies,
+                prevState.userMovies,
                 prevState.searchTerm
               ),
             };
@@ -306,7 +289,7 @@ const App = () => {
           setMoviesData((prevState) => {
             return {
               ...prevState,
-              savedMoviesToShow: prevState.savedMovies.filter(
+              savedMoviesToShow: prevState.userMovies.filter(
                 ({ duration }) =>
                   moviesData.isShorted && duration <= SHORT_MOVIE_DURATION
               ),
@@ -316,7 +299,7 @@ const App = () => {
           setMoviesData((prevState) => {
             return {
               ...prevState,
-              savedMoviesToShow: prevState.savedMovies,
+              savedMoviesToShow: prevState.userMovies,
             };
           });
         }
@@ -324,9 +307,9 @@ const App = () => {
     }
 
     setPreloader(false);
-    setInitFilter(false);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [moviesData.isShorted, currenLocation.pathname, initFilter]);
+    // setInitFilter(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [moviesData.isShorted, moviesData.isShorted2, currenLocation.pathname]);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -361,6 +344,7 @@ const App = () => {
           isShorted={moviesData.isShorted}
           preloader={preloader}
           setInitFilter={setInitFilter}
+          searchTerm={moviesData.searchTerm}
         />
 
         <ProtectedRoute

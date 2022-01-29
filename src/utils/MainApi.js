@@ -1,6 +1,7 @@
 import {
-  BACKEND_URL,
-  // localhost,
+  API_PREFIX,
+  // BACKEND_URL,
+  localhost,
 } from "./consts";
 
 class MainApi {
@@ -36,6 +37,14 @@ class MainApi {
     }).then(this._checkResponse);
   }
 
+  getUserMovies() {
+    return fetch(`${this._address}/movies`, {
+      method: 'GET',
+      credentials: this._credentials,
+      headers: this._headers,
+    }).then(this._checkResponse);
+  }
+
   createMovie(movie) {
     return fetch(`${this._address}/movies`, {
       method: "POST",
@@ -47,9 +56,9 @@ class MainApi {
         duration: movie.duration,
         year: movie.year,
         description: movie.description,
-        image: `https://api.nomoreparties.co${movie.image.url}`,
+        image: `${API_PREFIX}${movie.image.url}`,
         trailer: movie.trailerLink,
-        thumbnail: `https://api.nomoreparties.co${movie.image.formats.thumbnail.url}`,
+        thumbnail: `${API_PREFIX}${movie.image.formats.thumbnail.url}`,
         nameRU: movie.nameRU,
         nameEN: movie.nameEN,
         movieId: movie.movieId,
@@ -67,7 +76,7 @@ class MainApi {
 }
 
 export const mainApi = new MainApi({
-  address: BACKEND_URL,
+  address: localhost,
   headers: {
     "Content-Type": "application/json",
   },

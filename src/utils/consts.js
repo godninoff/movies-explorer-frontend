@@ -8,6 +8,7 @@ export const NOTFOUND_ROUTE = "*";
 export const localhost = "http://localhost:3000";
 export const BACKEND_URL = "https://ya-diploma-backend.nomoredomains.club";
 export const API_URL = "https://api.nomoreparties.co/beatfilm-movies";
+export const API_PREFIX = "https://api.nomoreparties.co";
 export const SUCCESS_MESSAGE = "Обновление успешно!";
 export const USERNAME_PATTERN_CHECK = "[а-яА-ЯёЁa-zA-Z- ]{1,}";
 export const EMAIL_PATTERN =

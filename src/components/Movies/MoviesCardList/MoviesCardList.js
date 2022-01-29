@@ -45,7 +45,7 @@ const MoviesCardList = (props) => {
     return (
       <MoviesCard
         card={card}
-        key={card.id}
+        key={card.id || card._id}
         onSaveMovie={props.onSaveMovie}
         onRemoveMovie={props.onRemoveMovie}
       />
