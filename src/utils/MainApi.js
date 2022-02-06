@@ -61,13 +61,13 @@ class MainApi {
         thumbnail: `${API_PREFIX}${movie.image.formats.thumbnail.url}`,
         nameRU: movie.nameRU,
         nameEN: movie.nameEN,
-        movieId: movie.movieId,
+        id: movie.id,
       }),
     }).then(this._checkResponse);
   }
 
-  deleteMovieById(movieId) {
-    return fetch(`${this._address}/movies/${movieId}`, {
+  deleteMovieById(id) {
+    return fetch(`${this._address}/movies/${id}`, {
       method: "DELETE",
       headers: this._headers,
       credentials: this._credentials,

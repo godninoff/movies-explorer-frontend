@@ -16,7 +16,6 @@ const Movies = (props) => {
         shortMoviesSwitcher={props.shortMoviesSwitcher}
         isShorted={props.isShorted}
         searchTerm={props.searchTerm}
-        setInitFilter={props.setInitFilter}
         storageSearchField={storageSearchField}
       />
       {props.preloader && <Preloader />}
@@ -26,6 +25,7 @@ const Movies = (props) => {
         onSaveMovie={props.onSaveMovie}
         onRemoveMovie={props.onRemoveMovie}
         movieSearchError={props.movieSearchError}
+        savedMovies={props.savedMovies}
       />
       <Footer />
     </main>

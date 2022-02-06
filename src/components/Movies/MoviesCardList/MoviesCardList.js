@@ -1,7 +1,7 @@
 import "./MoviesCardList.css";
 import MoviesCard from "../MoviesCard/MoviesCard";
 import { useLocation } from "react-router-dom";
-import { CARDS_AT_SCREEN, SAVED_MOVIES_ROUTE } from "../../../utils/consts";
+import { CARDS_AT_SCREEN, SAVED_MOVIES_ROUTE, MOVIES_ROUTE } from "../../../utils/consts";
 import React from "react";
 
 const MoviesCardList = (props) => {
@@ -42,12 +42,19 @@ const MoviesCardList = (props) => {
 
   const moreCardRender = props.movies.slice(0, numberOfInitialCards);
   const renderMoviesList = moreCardRender.map((card) => {
+    const isMovieRoute = location.pathname === MOVIES_ROUTE;
+    let isSaved = true;
+    if (isMovieRoute) {
+      isSaved = props.savedMovies.some(({id}) => card.id === id)
+    }
+
     return (
       <MoviesCard
         card={card}
         key={card.id || card._id}
         onSaveMovie={props.onSaveMovie}
         onRemoveMovie={props.onRemoveMovie}
+        isSaved={isSaved}
       />
     );
   });

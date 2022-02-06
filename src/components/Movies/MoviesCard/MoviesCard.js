@@ -9,21 +9,11 @@ import {
 import { CurrentUserContext } from "../../../context/CurrentUserContext";
 
 const MoviesCard = (props) => {
-  const currentUser = React.useContext(CurrentUserContext);
   const location = useLocation();
 
-  const [like, setLike] = React.useState(
-    false
-  );
-
-  const likeStatus = () => setLike(!like);
-
   const pushCardButton = (card) => {
-    let allCards = JSON.parse(localStorage.getItem(currentUser)) || [];
-    const isLiked = allCards.some((c) => c.id === card.id);
-    likeStatus();
 
-    if (isLiked) {
+    if (props.isSaved) {
       props.onRemoveMovie(card);
     } else {
       props.onSaveMovie(card);
@@ -32,10 +22,10 @@ const MoviesCard = (props) => {
 
 // кнопка лайка карточки закрашена || не закрашена
   const likeSwitch = `movie__button ${
-    like ? "movie__button pushed" : "movie__button like"
+      props.isSaved ? "movie__button pushed" : "movie__button like"
   }`;
 
-// по роуту saved, вместо кнопки лайка, крестик(удаление) карточки  
+// по роуту saved, вместо кнопки лайка, крестик(удаление) карточки
   const buttonStatus = `movie__button ${
     location.pathname === SAVED_MOVIES_ROUTE ? "remove" : ""
   }`;
