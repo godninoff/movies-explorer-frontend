@@ -13,7 +13,7 @@ class MoviesApi {
     return Promise.reject(`Ошибка: ${res.status}`);
   }
 
-  getMoviesInfo() {
+  getMoviesApi() {
     return fetch(this._address, {
       headers: this._headers,
     }).then((res) => this._checkResponse(res));

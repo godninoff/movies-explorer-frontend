@@ -6,52 +6,57 @@ import {
   MOVIES_ROUTE,
   SAVED_MOVIES_ROUTE,
 } from "../../../utils/consts";
-import { CurrentUserContext } from "../../../context/CurrentUserContext";
 
 const MoviesCard = (props) => {
-  const currentUser = React.useContext(CurrentUserContext);
   const location = useLocation();
 
-  const [like, setLike] = React.useState(
-    false
+  const userMovies = JSON.parse(localStorage.getItem("userMovies")).find(
+    (item) => item.nameRU === props.card.nameRU
   );
 
-  const likeStatus = () => setLike(!like);
-
-  const pushCardButton = (card) => {
-    let allCards = JSON.parse(localStorage.getItem(currentUser)) || [];
-    const isLiked = allCards.some((c) => c.id === card.id);
-    likeStatus();
-
-    if (isLiked) {
-      props.onRemoveMovie(card);
+  const isSaved = (movie) => {
+    if (movie === undefined) {
+      return false;
     } else {
-      props.onSaveMovie(card);
+      return true;
+    }
+  };
+  const [like, setLike] = React.useState(isSaved(userMovies));
+
+  const likeHandler = () => {
+    if (location.pathname === SAVED_MOVIES_ROUTE) {
+      props.onRemoveMovie(props.card.movieId);
+    } else if (!like) {
+      props.onSaveMovie(props.card);
+      setLike(true);
+    } else {
+      props.onRemoveMovie(props.card.id);
+      setLike(false);
     }
   };
 
-// кнопка лайка карточки закрашена || не закрашена
-  const likeSwitch = `movie__button ${
+  // кнопка лайка карточки закрашена || не закрашена
+  const handleLikeButton = `movie__button ${
     like ? "movie__button pushed" : "movie__button like"
   }`;
 
-// по роуту saved, вместо кнопки лайка, крестик(удаление) карточки  
-  const buttonStatus = `movie__button ${
+  // по роуту saved, вместо кнопки лайка, крестик(удаление) карточки
+  const removeLike = `movie__button ${
     location.pathname === SAVED_MOVIES_ROUTE ? "remove" : ""
   }`;
 
   // по роуту movies вызови условие переключения лайков || кнопка удаления
   const cardButtonAction = `movie__button ${
-    location.pathname === MOVIES_ROUTE ? likeSwitch : buttonStatus
+    location.pathname === MOVIES_ROUTE ? handleLikeButton : removeLike
   }`;
 
-// условие нужно для того, чтобы корректно отображать постер фильма на разных роутах.
-// в movies он приходит, как image.url, а в карточках юзера, как image.
+  // условие нужно для того, чтобы корректно отображать постер фильма на разных роутах.
+  // в movies он приходит, как image.url, а в карточках юзера, как image.
   const cardImage = `${API_PREFIX}${props.card.image.url}`;
-  const savedMovie = location.pathname === MOVIES_ROUTE;
-  const cardImagePrefix = savedMovie ? cardImage : props.card.image;
+  const moviesRoute = location.pathname === MOVIES_ROUTE;
+  const cardImagePrefix = moviesRoute ? cardImage : props.card.image;
 
-// формат времени короткометражек
+  // формат времени короткометражек
   const formatTime = (seconds) => {
     const h = Math.floor(seconds / 60);
     const m = Math.floor(seconds % 60);
@@ -76,7 +81,7 @@ const MoviesCard = (props) => {
         <h2 className="movie__name">{props.card.nameRU}</h2>
         <button
           className={cardButtonAction}
-          onClick={() => pushCardButton(props.card)}
+          onClick={likeHandler}
           type="button"
         ></button>
         <p className="movie__duration">{formatTime(props.card.duration)}</p>

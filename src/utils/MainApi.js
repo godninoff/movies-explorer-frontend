@@ -39,7 +39,7 @@ class MainApi {
 
   getUserMovies() {
     return fetch(`${this._address}/movies`, {
-      method: 'GET',
+      method: "GET",
       credentials: this._credentials,
       headers: this._headers,
     }).then(this._checkResponse);
@@ -61,7 +61,7 @@ class MainApi {
         thumbnail: `${API_PREFIX}${movie.image.formats.thumbnail.url}`,
         nameRU: movie.nameRU,
         nameEN: movie.nameEN,
-        movieId: movie.movieId,
+        movieId: movie.id,
       }),
     }).then(this._checkResponse);
   }
