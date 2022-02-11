@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Route,
-  Switch,
-  useHistory,
-  Redirect,
-  useLocation,
-} from "react-router-dom";
+import { Route, Switch, useHistory, Redirect } from "react-router-dom";
 import "./App.css";
 import Main from "../Main/Main";
 import Movies from "../Movies/Movies";
@@ -27,7 +21,6 @@ import {
   PROFILE_ROUTE,
   REGISTRATION_ROUTE,
   SAVED_MOVIES_ROUTE,
-  SHORT_MOVIE_DURATION,
   SUCCESS_MESSAGE,
 } from "../../utils/consts";
 
@@ -42,28 +35,19 @@ const App = () => {
   const [movies, setMovies] = React.useState([]);
   const [savedMovies, setSavedMovies] = React.useState([]);
   const [moviesToShow, setMoviesToShow] = React.useState([]);
-  const [isShorted, setIsShorted] = React.useState(false);
-  const [searchTerm, setSearchTerm] = React.useState("");
 
   // =======================================
-  // GET: user, movieApi, userMovies
+  //     GET: user, movieApi, userMovies
   // =======================================
 
   const [movieSearchError, setMovieSearchError] = React.useState("");
-  const currenLocation = useLocation();
 
   React.useEffect(() => {
     if (loggedIn) {
-      Promise.all([
-        mainApi.getUserInfo(),
-        moviesApi.getMoviesApi(),
-        mainApi.getUserMovies(),
-      ])
-        .then(([user, moviesApi, userMovies]) => {
+      Promise.all([mainApi.getUserInfo(), mainApi.getUserMovies()])
+        .then(([user, userMovies]) => {
           setCurrentUser(user);
-          setMovies(moviesApi);
           setSavedMovies(userMovies);
-          localStorage.setItem("moviesApi", JSON.stringify(moviesApi));
           localStorage.setItem("userMovies", JSON.stringify(userMovies));
         })
         .catch((e) => {
@@ -90,7 +74,7 @@ const App = () => {
       .then(() => {
         localStorage.setItem("auth", true);
         setLoggedIn(JSON.parse(localStorage.getItem("auth")));
-        getLocalStorage();
+        // getLocalStorage();
         setPreloader(false);
         history.push(MOVIES_ROUTE);
       })
@@ -153,30 +137,29 @@ const App = () => {
   //              MOVIES ACTIONS
   // =======================================
 
-  const getCurrentMovies = (data) => {
-    if (data) {
-      setMovies(data);
-    }
-  };
+  // const getCurrentMovies = (data) => {
+  //   if (data) {
+  //     setMovies(data);
+  //   }
+  // };
 
-  const getCurrentSearch = (searchTerm, moviesToShow, isShorted) => {
-    if (searchTerm) {
-      setSearchTerm(searchTerm);
-      setMoviesToShow(moviesToShow);
-      setIsShorted(isShorted);
-    }
-  };
+  // const getCurrentSearch = (searchTerm, moviesToShow, isShorted) => {
+  //   if (searchTerm) {
+  //     setSearchTerm(searchTerm);
+  //     setMoviesToShow(moviesToShow);
+  //     setIsShorted(isShorted);
+  //   }
+  // };
 
-  const getLocalStorage = () => {
-    const currentMovies = JSON.parse(localStorage.getItem("moviesApi"));
-    const moviesToShow = JSON.parse(localStorage.getItem("foundMovies"));
-    const searchTerm = JSON.parse(localStorage.getItem("searchTerm"));
-    const isShorted = JSON.parse(localStorage.getItem("isShorted"));
-    const userMovies = JSON.parse(localStorage.getItem("userMovies"));
+  // const getLocalStorage = () => {
+  //   const currentMovies = JSON.parse(localStorage.getItem("moviesApi"));
+  //   const moviesToShow = JSON.parse(localStorage.getItem("foundMovies"));
+  //   const searchTerm = JSON.parse(localStorage.getItem("searchTerm"));
+  //   const isShorted = JSON.parse(localStorage.getItem("isShorted"));
 
-    getCurrentMovies(currentMovies);
-    getCurrentSearch(searchTerm, moviesToShow, isShorted);
-  };
+  //   getCurrentMovies(currentMovies);
+  //   getCurrentSearch(searchTerm, moviesToShow, isShorted);
+  // };
 
   const saveMovie = (savedMovie) => {
     Object.assign(savedMovie, { movieId: savedMovie.id });
@@ -215,14 +198,6 @@ const App = () => {
   //              SEARCH ACTIONS
   // =======================================
 
-  const searchHandler = (searchTerm) => {
-    setSearchTerm(searchTerm);
-  };
-
-  const shortMoviesSwitcher = () => {
-    setIsShorted(!isShorted);
-  };
-
   const filterMovies = (data, searchTerm) => {
     return data.filter((item) => {
       return Object.values(item)
@@ -232,93 +207,42 @@ const App = () => {
     });
   };
 
-  // React.useEffect(() => {
-  //   setPreloader(true);
+  const searchSavedMovies = (searchTerm) => {
+    const isSaved = JSON.parse(localStorage.getItem("userMovies"));
+    const savedMoviesToShow = filterMovies(isSaved, searchTerm);
 
-  //   // eslint-disable-next-line default-case
-  //   switch (currenLocation.pathname) {
-  //     case MOVIES_ROUTE:
-  //       if (moviesData.searchTerm) {
-  //         setMoviesData((prevState) => ({
-  //           ...prevState,
-  //           searchTerm: moviesData.searchTerm,
-  //         }));
-  //         setMoviesData((prevState) => {
-  //           return {
-  //             ...prevState,
-  //             moviesToShow: filterMovies(
-  //               prevState.movies,
-  //               prevState.searchTerm
-  //             ),
-  //           };
-  //         });
-  //         localStorage.setItem(
-  //           "searchField",
-  //           JSON.stringify(moviesData.searchTerm)
-  //         );
-  //         localStorage.setItem(
-  //           "foundMovies",
-  //           JSON.stringify(moviesData.moviesToShow)
-  //         );
-  //       }
-  //       if (moviesData.isShorted2 && moviesData.searchTerm) {
-  //         setMoviesData({
-  //           searchTerm: moviesData.searchTerm,
-  //           isShorted2: moviesData.isShorted2,
-  //         });
-  //         setMoviesData((prevState) => {
-  //           return {
-  //             ...prevState,
-  //             moviesToShow: prevState.moviesToShow.filter(
-  //               ({ duration }) => duration <= SHORT_MOVIE_DURATION
-  //             ),
-  //           };
-  //         });
-  //         localStorage.setItem(
-  //           "checkbox",
-  //           JSON.stringify(moviesData.isShorted2)
-  //         );
-  //       }
-  //       break;
+    if (savedMoviesToShow.length !== 0) {
+      setSavedMovies(savedMoviesToShow);
+    } else {
+      setSavedMovies([]);
+    }
+  };
 
-  //     case SAVED_MOVIES_ROUTE:
-  //       if (moviesData.searchTerm) {
-  //         setMoviesData((prevState) => {
-  //           return {
-  //             ...prevState,
-  //             savedMoviesToShow: filterMovies(
-  //               prevState.userMovies,
-  //               prevState.searchTerm
-  //             ),
-  //           };
-  //         });
-  //       }
+  const searchHandler = (searchTerm) => {
+    const searchQuery = (query) => {
+      const moviesToShow = filterMovies(query, searchTerm);
+      if (moviesToShow.length !== 0) {
+        localStorage.setItem("foundMovies", JSON.stringify(moviesToShow));
+        setMovies(JSON.parse(localStorage.getItem("foundMovies")));
+      } else {
+        setMovies([]);
+      }
+    };
 
-  //       if (moviesData.isShorted) {
-  //         setMoviesData((prevState) => {
-  //           return {
-  //             ...prevState,
-  //             savedMoviesToShow: prevState.userMovies.filter(
-  //               ({ duration }) =>
-  //                 moviesData.isShorted && duration <= SHORT_MOVIE_DURATION
-  //             ),
-  //           };
-  //         });
-  //       } else if (!moviesData.isShorted && !moviesData.searchTerm) {
-  //         setMoviesData((prevState) => {
-  //           return {
-  //             ...prevState,
-  //             savedMoviesToShow: prevState.userMovies,
-  //           };
-  //         });
-  //       }
-  //       break;
-  //   }
-
-  //   setPreloader(false);
-  //   // setInitFilter(false);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [moviesData.isShorted, moviesData.isShorted2, currenLocation.pathname]);
+    if (moviesToShow.length === 0) {
+      moviesApi
+        .getMoviesApi()
+        .then((cards) => {
+          setMoviesToShow(cards);
+          searchQuery(cards);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    } else {
+      searchQuery(moviesToShow);
+    }
+  };
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -332,11 +256,8 @@ const App = () => {
           loggedIn={loggedIn}
           movies={movies}
           savedMovies={savedMovies}
-          searchTerm={searchTerm}
           searchHandler={searchHandler}
           preloader={preloader}
-          shortMoviesSwitcher={shortMoviesSwitcher}
-          isShorted={isShorted}
           movieSearchError={movieSearchError}
           onSaveMovie={saveMovie}
           onRemoveMovie={movieRemove}
@@ -348,11 +269,8 @@ const App = () => {
           loggedIn={loggedIn}
           savedMovies={savedMovies}
           onRemoveMovie={movieRemove}
-          searchHandler={searchHandler}
-          shortMoviesSwitcher={shortMoviesSwitcher}
-          isShorted={isShorted}
+          searchHandler={searchSavedMovies}
           preloader={preloader}
-          searchTerm={searchTerm}
         />
 
         <ProtectedRoute

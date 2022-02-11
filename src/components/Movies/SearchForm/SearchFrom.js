@@ -9,12 +9,7 @@ const SearchForm = (props) => {
 
   const search = (e) => {
     e.preventDefault();
-    props.setInitFilter(true);
-  };
-
-  const handleTextInput = (e) => {
-    props.searchHandler(e?.target?.value?.trim());
-    handleChange(e);
+    props.searchHandler(values.searchForm);
   };
 
   return (
@@ -31,8 +26,8 @@ const SearchForm = (props) => {
                 type="text"
                 placeholder="Фильм"
                 id="searchForm"
-                value={values.searchForm || props.storageSearchField || ""}
-                onChange={(e) => handleTextInput(e)}
+                value={values.searchForm || ""}
+                onChange={handleChange}
               />
               <button className="search__button" type="submit">
                 Найти
