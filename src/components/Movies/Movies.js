@@ -7,8 +7,11 @@ import Preloader from "./Preloader/Preloader";
 import { SHORT_MOVIE_DURATION } from "../../utils/consts";
 
 const Movies = (props) => {
-  const [isShorted, setIsShorted] = React.useState(false);
+  const [isShorted, setIsShorted] = React.useState(
+    JSON.parse(localStorage.getItem("checkboxMovies"))
+  );
   const [moviesToShow, setMoviesToShow] = React.useState([]);
+  const movieSearch = JSON.parse(localStorage.getItem("moviesSearch"));
 
   const searchShort = (movies) => {
     return movies.filter(({ duration }) => duration <= SHORT_MOVIE_DURATION);
@@ -16,6 +19,7 @@ const Movies = (props) => {
 
   const shortMoviesSwitcher = () => {
     setIsShorted(!isShorted);
+    localStorage.setItem("checkboxMovies", JSON.stringify(!isShorted));
   };
 
   React.useEffect(() => {
@@ -35,6 +39,8 @@ const Movies = (props) => {
       <SearchForm
         searchHandler={props.searchHandler}
         shortMoviesSwitcher={shortMoviesSwitcher}
+        isShorted={isShorted}
+        movieSearch={movieSearch}
       />
       {props.preloader && <Preloader />}
       <MoviesCardList

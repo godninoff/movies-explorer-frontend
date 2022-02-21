@@ -4,12 +4,26 @@ import useForm from "../../../utils/useForm";
 import React from "react";
 
 const SearchForm = (props) => {
-  const { handleChange, errors, values } = useForm();
+  const { handleChange, errors, values, resetForm, isValid } = useForm();
   const inputEl = React.useRef("");
+  const [clearSearchForm, setClearSearchForm] = React.useState(
+    props.movieSearch
+  );
+
+  React.useEffect(() => {
+    if (values.searchForm === "") {
+      localStorage.removeItem("savedMovieSearch");
+      setClearSearchForm("");
+      resetForm();
+    }
+  }, [resetForm, values.searchForm]);
 
   const search = (e) => {
     e.preventDefault();
-    props.searchHandler(values.searchForm);
+    if (isValid) {
+      props.searchHandler(values.searchForm);
+    }
+    return;
   };
 
   return (
@@ -26,7 +40,7 @@ const SearchForm = (props) => {
                 type="text"
                 placeholder="Фильм"
                 id="searchForm"
-                value={values.searchForm || ""}
+                value={values.searchForm || clearSearchForm || ""}
                 onChange={handleChange}
               />
               <button className="search__button" type="submit">

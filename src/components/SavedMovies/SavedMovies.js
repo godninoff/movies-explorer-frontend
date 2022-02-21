@@ -7,8 +7,11 @@ import { SHORT_MOVIE_DURATION } from "../../utils/consts";
 import React from "react";
 
 const SavedMovies = (props) => {
-  const [isShorted, setIsShorted] = React.useState(false);
+  const [isShorted, setIsShorted] = React.useState(
+    JSON.parse(localStorage.getItem("checkboxSavedMovies"))
+  );
   const [moviesToShow, setMoviesToShow] = React.useState([]);
+  const movieSearch = JSON.parse(localStorage.getItem("savedMovieSearch"));
 
   const searchShort = (movies) => {
     return movies.filter(({ duration }) => duration <= SHORT_MOVIE_DURATION);
@@ -16,29 +19,39 @@ const SavedMovies = (props) => {
 
   const shortMoviesSwitcher = () => {
     setIsShorted(!isShorted);
+    localStorage.setItem("checkboxSavedMovies", JSON.stringify(!isShorted));
   };
 
   React.useEffect(() => {
     if (isShorted) {
-      const shortedMoviesToShow = searchShort(props.savedMovies);
-      if (shortedMoviesToShow.length !== 0) {
-        setMoviesToShow(shortedMoviesToShow);
+      if (movieSearch) {
+        setMoviesToShow(searchShort(props.savedMoviesToShow));
       } else {
-        setMoviesToShow([]);
+        setMoviesToShow(searchShort(props.savedMovies));
+      }
+    } else {
+      if (movieSearch) {
+        setMoviesToShow(props.savedMoviesToShow);
+      } else {
+        setMoviesToShow(props.savedMovies);
       }
     }
-  }, [props.savedMovies, isShorted]);
+  }, [isShorted, movieSearch, props.savedMovies, props.savedMoviesToShow]);
+
   return (
     <>
       <Header loggedIn={props.loggedIn} />
       <SearchForm
         searchHandler={props.searchHandler}
         shortMoviesSwitcher={shortMoviesSwitcher}
+        isShorted={isShorted}
+        movieSearch={movieSearch}
       />
       {props.preloader && <Preloader />}
       <MoviesCardList
-        movies={isShorted ? moviesToShow : props.savedMovies}
+        movies={moviesToShow}
         onRemoveMovie={props.onRemoveMovie}
+        movieSearchError={props.movieSearchError}
       />
       <Footer />
     </>

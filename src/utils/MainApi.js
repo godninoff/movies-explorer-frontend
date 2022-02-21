@@ -61,7 +61,7 @@ class MainApi {
         thumbnail: `${API_PREFIX}${movie.image.formats.thumbnail.url}`,
         nameRU: movie.nameRU,
         nameEN: movie.nameEN,
-        movieId: movie.id,
+        movieId: movie.movieId,
       }),
     }).then(this._checkResponse);
   }

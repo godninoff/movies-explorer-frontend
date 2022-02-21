@@ -26,7 +26,6 @@ const MoviesCardList = (props) => {
     const cardsOnPage = numberOfCards(window.screen.width);
     setNumberOfInitialCards(cardsOnPage.cardsPerPage);
     setNumberOfAdditionalCards(cardsOnPage.addCards);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sizeWindow]);
 
   React.useEffect(() => {
@@ -62,16 +61,17 @@ const MoviesCardList = (props) => {
   return (
     <section className="movies-cards">
       <ul className="movies-card-list">
-        {renderMoviesList.length > 0 && renderMoviesList}
-        {renderMoviesList.length === 0 && !props.movieSearchError && (
-          <span className="movies__not-found">Ничего не найдено</span>
-        )}
-
         {props.movieSearchError && (
           <span className="movies__not-found movies__not-found_error">
             Во время запроса произошла ошибка. Возможно, проблема с соединением
             или сервер недоступен. Подождите немного и попробуйте ещё раз.
           </span>
+        )}
+        {renderMoviesList.length > 0 &&
+          !props.movieSearchError &&
+          renderMoviesList}
+        {renderMoviesList.length === 0 && !props.movieSearchError && (
+          <span className="movies__not-found">Ничего не найдено</span>
         )}
       </ul>
       {renderMoviesList.length < props.movies.length && (

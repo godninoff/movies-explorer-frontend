@@ -67,7 +67,7 @@ const MoviesCard = (props) => {
     <article className="movie">
       <a
         className="movie__trailer"
-        href={props.card.trailerLink}
+        href={props.card.trailerLink || props.card.trailer}
         target="_blank"
         rel="noreferrer"
       >

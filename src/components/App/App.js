@@ -32,9 +32,18 @@ const App = () => {
   const [currentUser, setCurrentUser] = React.useState({});
   const [preloader, setPreloader] = React.useState(false);
 
-  const [movies, setMovies] = React.useState([]);
+  const [movies, setMovies] = React.useState(
+    localStorage.getItem("foundMovies")
+      ? JSON.parse(localStorage.getItem("foundMovies"))
+      : []
+  );
   const [savedMovies, setSavedMovies] = React.useState([]);
   const [moviesToShow, setMoviesToShow] = React.useState([]);
+  const [savedMoviesToShow, setSavedMoviesToShow] = React.useState(
+    localStorage.getItem("searched")
+      ? JSON.parse(localStorage.getItem("searched"))
+      : []
+  );
 
   // =======================================
   //     GET: user, movieApi, userMovies
@@ -74,7 +83,6 @@ const App = () => {
       .then(() => {
         localStorage.setItem("auth", true);
         setLoggedIn(JSON.parse(localStorage.getItem("auth")));
-        // getLocalStorage();
         setPreloader(false);
         history.push(MOVIES_ROUTE);
       })
@@ -102,6 +110,8 @@ const App = () => {
     auth
       .logout()
       .then(() => {
+        setMovies([]);
+        setSavedMoviesToShow([]);
         localStorage.setItem("auth", false);
         setLoggedIn(JSON.parse(localStorage.getItem("auth")));
         localStorage.clear();
@@ -124,7 +134,6 @@ const App = () => {
       })
       .catch((e) => {
         setPreloader(false);
-
         console.log(e.message);
         setUpdateProfileMessage({
           message: e.message,
@@ -136,30 +145,6 @@ const App = () => {
   // =======================================
   //              MOVIES ACTIONS
   // =======================================
-
-  // const getCurrentMovies = (data) => {
-  //   if (data) {
-  //     setMovies(data);
-  //   }
-  // };
-
-  // const getCurrentSearch = (searchTerm, moviesToShow, isShorted) => {
-  //   if (searchTerm) {
-  //     setSearchTerm(searchTerm);
-  //     setMoviesToShow(moviesToShow);
-  //     setIsShorted(isShorted);
-  //   }
-  // };
-
-  // const getLocalStorage = () => {
-  //   const currentMovies = JSON.parse(localStorage.getItem("moviesApi"));
-  //   const moviesToShow = JSON.parse(localStorage.getItem("foundMovies"));
-  //   const searchTerm = JSON.parse(localStorage.getItem("searchTerm"));
-  //   const isShorted = JSON.parse(localStorage.getItem("isShorted"));
-
-  //   getCurrentMovies(currentMovies);
-  //   getCurrentSearch(searchTerm, moviesToShow, isShorted);
-  // };
 
   const saveMovie = (savedMovie) => {
     Object.assign(savedMovie, { movieId: savedMovie.id });
@@ -208,23 +193,31 @@ const App = () => {
   };
 
   const searchSavedMovies = (searchTerm) => {
+    setPreloader(true);
     const isSaved = JSON.parse(localStorage.getItem("userMovies"));
     const savedMoviesToShow = filterMovies(isSaved, searchTerm);
-
     if (savedMoviesToShow.length !== 0) {
-      setSavedMovies(savedMoviesToShow);
+      setPreloader(false);
+      localStorage.setItem("searched", JSON.stringify(savedMoviesToShow));
+      localStorage.setItem("savedMovieSearch", JSON.stringify(searchTerm));
+      setSavedMoviesToShow(JSON.parse(localStorage.getItem("searched")));
     } else {
+      setPreloader(false);
       setSavedMovies([]);
     }
   };
 
   const searchHandler = (searchTerm) => {
+    setPreloader(true);
     const searchQuery = (query) => {
       const moviesToShow = filterMovies(query, searchTerm);
       if (moviesToShow.length !== 0) {
+        setPreloader(false);
         localStorage.setItem("foundMovies", JSON.stringify(moviesToShow));
+        localStorage.setItem("moviesSearch", JSON.stringify(searchTerm));
         setMovies(JSON.parse(localStorage.getItem("foundMovies")));
       } else {
+        setPreloader(false);
         setMovies([]);
       }
     };
@@ -233,8 +226,8 @@ const App = () => {
       moviesApi
         .getMoviesApi()
         .then((cards) => {
-          setMoviesToShow(cards);
           searchQuery(cards);
+          setMoviesToShow(cards);
         })
         .catch((e) => {
           console.log(e);
@@ -268,9 +261,11 @@ const App = () => {
           component={SavedMovies}
           loggedIn={loggedIn}
           savedMovies={savedMovies}
+          savedMoviesToShow={savedMoviesToShow}
           onRemoveMovie={movieRemove}
           searchHandler={searchSavedMovies}
           preloader={preloader}
+          movieSearchError={movieSearchError}
         />
 
         <ProtectedRoute
