@@ -170,9 +170,7 @@ const App = () => {
     mainApi
       .deleteMovieById(removedMovie)
       .then(() => {
-        const userMovies = savedMovies.filter(
-          (m) => m.movieId !== removedMovie
-        );
+        const userMovies = savedMovies.filter((m) => m._id !== removedMovie);
         localStorage.setItem("userMovies", JSON.stringify(userMovies));
         setSavedMovies(userMovies);
       })

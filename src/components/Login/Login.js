@@ -22,7 +22,10 @@ const Login = (props) => {
         <HeaderLogo />
         <h2 className="login__title auth__title">Рады видеть!</h2>
         <form className="login__form auth__form" onSubmit={handleSubmit}>
-          <fieldset className="login__fields auth__fields">
+          <fieldset
+            className="login__fields auth__fields"
+            disabled={props.preloader}
+          >
             <p className="login-inputs__text auth-inputs__text">E-mail</p>
             <input
               className="login_inputs auth_inputs"

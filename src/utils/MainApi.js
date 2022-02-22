@@ -59,8 +59,8 @@ class MainApi {
         image: `${API_PREFIX}${movie.image.url}`,
         trailer: movie.trailerLink,
         thumbnail: `${API_PREFIX}${movie.image.formats.thumbnail.url}`,
-        nameRU: movie.nameRU,
-        nameEN: movie.nameEN,
+        nameRU: movie.nameRU || "data",
+        nameEN: movie.nameEN || "data",
         movieId: movie.movieId,
       }),
     }).then(this._checkResponse);

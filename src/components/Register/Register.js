@@ -25,7 +25,10 @@ const Register = (props) => {
       <HeaderLogo />
       <h2 className="register__title auth__title">Добро пожаловать!</h2>
       <form className="register__form auth__form" onSubmit={handleSubmit}>
-        <fieldset className="register__fields auth__fields">
+        <fieldset
+          className="register__fields auth__fields"
+          disabled={props.preloader}
+        >
           <p className="register__form_name auth-inputs__text">Имя</p>
           <input
             className="register__form-input auth_inputs"

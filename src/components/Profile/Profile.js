@@ -51,7 +51,7 @@ const Profile = (props) => {
           onSubmit={handleSubmit}
           noValidate
         >
-          <fieldset className="profile__fields">
+          <fieldset className="profile__fields" disabled={props.preloader}>
             <div className="profile__form">
               <input
                 placeholder="Имя"

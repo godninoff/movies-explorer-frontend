@@ -13,6 +13,7 @@ const SearchForm = (props) => {
   React.useEffect(() => {
     if (values.searchForm === "") {
       localStorage.removeItem("savedMovieSearch");
+      localStorage.removeItem("moviesSearch");
       setClearSearchForm("");
       resetForm();
     }

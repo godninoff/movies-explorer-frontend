@@ -25,12 +25,12 @@ const MoviesCard = (props) => {
 
   const likeHandler = () => {
     if (location.pathname === SAVED_MOVIES_ROUTE) {
-      props.onRemoveMovie(props.card.movieId);
+      props.onRemoveMovie(props.card._id);
     } else if (!like) {
       props.onSaveMovie(props.card);
       setLike(true);
     } else {
-      props.onRemoveMovie(props.card.id);
+      props.onRemoveMovie(userMovies._id);
       setLike(false);
     }
   };
