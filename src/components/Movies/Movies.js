@@ -14,7 +14,7 @@ const Movies = (props) => {
   const movieSearch = JSON.parse(localStorage.getItem("moviesSearch"));
 
   const searchShort = (movies) => {
-    return movies.filter(({ trailerLink }) => trailerLink <= SHORT_MOVIE_DURATION);
+    return movies.filter(({ duration }) => duration <= SHORT_MOVIE_DURATION);
   };
 
   const shortMoviesSwitcher = () => {
