@@ -1,11 +1,7 @@
 import "./MoviesCardList.css";
 import MoviesCard from "../MoviesCard/MoviesCard";
 import { useLocation } from "react-router-dom";
-import {
-  CARDS_AT_SCREEN,
-  MOVIES_ROUTE,
-  SAVED_MOVIES_ROUTE,
-} from "../../../utils/consts";
+import { CARDS_AT_SCREEN, SAVED_MOVIES_ROUTE } from "../../../utils/consts";
 import React from "react";
 
 const MoviesCardList = (props) => {
@@ -43,18 +39,15 @@ const MoviesCardList = (props) => {
     window.addEventListener("resize", resize);
   }, []);
 
-  const moreCardRender =
-    location.pathname === MOVIES_ROUTE
-      ? props.movies.slice(0, numberOfInitialCards)
-      : JSON.parse(localStorage.getItem("savedMovies")) || [];
-  const renderMoviesList = moreCardRender.map((card, num) => {
+  const moreCardRender = props.movies.slice(0, numberOfInitialCards);
+
+  const renderMoviesList = moreCardRender.map((card) => {
     return (
       <MoviesCard
         card={card}
-        key={num}
-        onSaveMovie={props.onSaveMovie}
+        key={card._id || card.id}
         onRemoveMovie={props.onRemoveMovie}
-        savedMovies={localStorage.getItem("savedMovies")}
+        onSaveMovie={props.onSaveMovie}
       />
     );
   });
@@ -68,16 +61,17 @@ const MoviesCardList = (props) => {
   return (
     <section className="movies-cards">
       <ul className="movies-card-list">
-        {renderMoviesList.length > 0 && renderMoviesList}
-        {renderMoviesList.length === 0 && !props.movieSearchError && (
-          <span className="movies__not-found">Ничего не найдено</span>
-        )}
-
         {props.movieSearchError && (
           <span className="movies__not-found movies__not-found_error">
             Во время запроса произошла ошибка. Возможно, проблема с соединением
             или сервер недоступен. Подождите немного и попробуйте ещё раз.
           </span>
+        )}
+        {renderMoviesList.length > 0 &&
+          !props.movieSearchError &&
+          renderMoviesList}
+        {renderMoviesList.length === 0 && !props.movieSearchError && (
+          <span className="movies__not-found">Ничего не найдено</span>
         )}
       </ul>
       {renderMoviesList.length < props.movies.length && (

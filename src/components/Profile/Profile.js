@@ -4,7 +4,11 @@ import "./Profile.css";
 import { Link } from "react-router-dom";
 import { CurrentUserContext } from "../../context/CurrentUserContext";
 import useForm from "../../utils/useForm";
-import { LANDING_ROUTE, USERNAME_PATTERN_CHECK } from "../../utils/consts";
+import {
+  EMAIL_PATTERN,
+  LANDING_ROUTE,
+  USERNAME_PATTERN_CHECK,
+} from "../../utils/consts";
 import Preloader from "../Movies/Preloader/Preloader";
 
 const Profile = (props) => {
@@ -47,7 +51,7 @@ const Profile = (props) => {
           onSubmit={handleSubmit}
           noValidate
         >
-          <fieldset className="profile__fields">
+          <fieldset className="profile__fields" disabled={props.preloader}>
             <div className="profile__form">
               <input
                 placeholder="Имя"
@@ -75,6 +79,7 @@ const Profile = (props) => {
                 required
                 onChange={handleInputChange}
                 value={values.email || ""}
+                pattern={EMAIL_PATTERN}
               />
             </div>
             {errors.email && (

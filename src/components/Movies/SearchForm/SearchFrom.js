@@ -4,12 +4,27 @@ import useForm from "../../../utils/useForm";
 import React from "react";
 
 const SearchForm = (props) => {
-  const { handleChange, errors } = useForm();
+  const { handleChange, errors, values, resetForm, isValid } = useForm();
   const inputEl = React.useRef("");
+  const [clearSearchForm, setClearSearchForm] = React.useState(
+    props.movieSearch
+  );
+
+  React.useEffect(() => {
+    if (values.searchForm === "") {
+      localStorage.removeItem("savedMovieSearch");
+      localStorage.removeItem("moviesSearch");
+      setClearSearchForm("");
+      resetForm();
+    }
+  }, [resetForm, values.searchForm]);
 
   const search = (e) => {
     e.preventDefault();
-    props.searchHandler(inputEl.current.value);
+    if (isValid) {
+      props.searchHandler(values.searchForm);
+    }
+    return;
   };
 
   return (
@@ -26,7 +41,7 @@ const SearchForm = (props) => {
                 type="text"
                 placeholder="Фильм"
                 id="searchForm"
-                value={props.searchTerm}
+                value={values.searchForm || clearSearchForm || ""}
                 onChange={handleChange}
               />
               <button className="search__button" type="submit">
@@ -34,7 +49,10 @@ const SearchForm = (props) => {
               </button>
             </div>
             {errors.searchForm && <p>{errors.searchForm}</p>}
-            <FilterCheckbox shortMoviesSwitcher={props.shortMoviesSwitcher} />
+            <FilterCheckbox
+              shortMoviesSwitcher={props.shortMoviesSwitcher}
+              isShorted={props.isShorted}
+            />
           </fieldset>
         </form>
       </div>
